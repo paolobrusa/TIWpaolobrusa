@@ -1,35 +1,36 @@
 package it.polimi.tiwpaolobrusa.dao;
 
-import it.polimi.tiwpaolobrusa.beans.Utente;
+import it.polimi.tiwpaolobrusa.beans.Asta;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class UtenteDAO {
+public class AstaDAO {
     private final Connection connection;
 
-    public UtenteDAO(Connection connection) {
+    public AstaDAO(Connection connection) {
         this.connection = connection;
     }
 
-    public Utente getUtente(String username, String pwd) throws SQLException {
-        Utente u = null;
-        String query = "SELECT * FROM Utente WHERE username = ? AND pwd = ?";
-        ResultSet rs = null;
+    public List<Asta> getAsteAperte(String username) throws SQLException {
+        List<Asta> asta = new ArrayList<Asta>();
+        String query = "SELECT * FROM Asta JOIN Articolilista ON Asta.id = Articolilista.idasta JOIN Articolo ON Articolilista.codarticolo = Articolo.codice WHERE Articolo.proprietario = ?";
         PreparedStatement ps = null;
-        try {
+        ResultSet rs = null;
+        try{
             ps = connection.prepareStatement(query);
             ps.setString(1, username);
-            ps.setString(2, pwd);
             rs = ps.executeQuery();
-            if (rs.next())
-                u = new Utente(rs.getString("username"), rs.getString("pwd"), rs.getString("nome"),rs.getString("cognome"),rs.getString("indirizzo"));
-            else
-                throw new SQLException("Username or password incorrect");
-        }catch (SQLException e){
-            throw new SQLException(e);
+            while (rs.next()) {
+                                                                            //MANCA TUTTO IL CODICE
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
         }
         finally {
             try{
@@ -43,6 +44,6 @@ public class UtenteDAO {
                 throw new SQLException("Error closing statement");
             }
         }
-        return u;
+        return asta;
     }
 }

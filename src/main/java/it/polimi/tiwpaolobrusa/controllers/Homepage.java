@@ -1,33 +1,31 @@
 package it.polimi.tiwpaolobrusa.controllers;
 
-import it.polimi.tiwpaolobrusa.beans.Utente;
-import it.polimi.tiwpaolobrusa.dao.UtenteDAO;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-@WebServlet("/Login")
-public class Login extends HttpServlet {
+@WebServlet("/Homepage")
+public class Homepage extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection con = null;
     RequestDispatcher dispatcher = null;
 
-    public Login() {
+    public Homepage() {
         super();
     }
 
-    public void init() throws ServletException{
+    public void init() throws ServletException {
         ServletContext context = getServletContext();
         String user = context.getInitParameter("user");
         String pwd = context.getInitParameter("pwd");
@@ -46,24 +44,9 @@ public class Login extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = "/WEB-INF/login.jsp";
+        String path = "/WEB-INF/homepage.jsp";
         dispatcher = request.getRequestDispatcher(path);
         dispatcher.forward(request, response);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        UtenteDAO uDAO = new UtenteDAO(con);
-        Utente user = null;
-        try {
-            user = uDAO.getUtente(request.getParameter("username"), request.getParameter("password"));
-        } catch (SQLException e) {
-            request.setAttribute("errorMessage", e.getCause().getMessage());
-            dispatcher.forward(request, response);
-            return;
-        }
-        HttpSession session = request.getSession(true);
-        session.setAttribute("user", user.getUsername());
-        response.sendRedirect(request.getContextPath() + "/Homepage");
     }
 
     public void destroy() {
