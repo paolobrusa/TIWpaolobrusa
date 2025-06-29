@@ -6,9 +6,9 @@ public class Articolo {
     private String description;
     private String owner;
     private String path;
-    private float price;
+    private int price;
 
-    public Articolo(int code, String name, String description, String owner, String path, float price) {
+    public Articolo(int code, String name, String description, String owner, String path, int price) {
         this.code = code;
         this.name = name;
         this.description = description;
@@ -57,11 +57,11 @@ public class Articolo {
         this.path = path;
     }
 
-    public float getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 }

@@ -6,12 +6,12 @@ import java.util.List;
 public class Asta {
     private int id;
     private List<Articolo> items;
-    private float initialPrice;
+    private int initialPrice;
     private int minBid;
     private Date date;
     private State state;
 
-    public Asta(int id, List<Articolo> items, float initialPrice, int minBid, Date date, State state) {
+    public Asta(int id, List<Articolo> items, int initialPrice, int minBid, Date date, State state) {
         this.id = id;
         this.items = items;
         this.initialPrice = initialPrice;
@@ -36,11 +36,11 @@ public class Asta {
         this.items = items;
     }
 
-    public float getInitialPrice() {
+    public int getInitialPrice() {
         return initialPrice;
     }
 
-    public void setInitialPrice(float initialPrice) {
+    public void setInitialPrice(int initialPrice) {
         this.initialPrice = initialPrice;
     }
 
