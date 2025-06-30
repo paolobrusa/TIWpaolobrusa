@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="it">
@@ -25,7 +26,7 @@
             </div>
             <h2>Vendi</h2>
             <p>Metti in vendita i tuoi prodotti</p>
-            <a href="vendo.jsp" class="btn-option">Vai a Vendo</a>
+            <a href="${pageContext.request.contextPath}/Vendo" class="btn-option">Vai a Vendo</a>
         </div>
 
         <div class="option-card">
@@ -37,8 +38,8 @@
                 </svg>
             </div>
             <h2>Acquista</h2>
-            <p>Trova i prodotti che stai cercando</p>
-            <a href="acquisto.jsp" class="btn-option">Vai ad Acquisto</a>
+            <p>Trova qualcosa che ti interessa</p>
+            <a href="${pageContext.request.contextPath}/Vendo" class="btn-option">Vai ad Acquisto</a>
         </div>
     </div>
 </div>

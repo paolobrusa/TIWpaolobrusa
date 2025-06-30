@@ -36,7 +36,7 @@ public class Login extends HttpServlet {
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Can't load driver");
+            throw new RuntimeException("Can't load driver");     //metti qualcosa qui per disconnessione sessione
         }
         try {
             con = DriverManager.getConnection(url, user, pwd);

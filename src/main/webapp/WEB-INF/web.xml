@@ -14,7 +14,7 @@
     </context-param>
     <context-param>
         <param-name>urlDb</param-name>
-        <param-value>jdbc:mariadb://host:3306/tiw</param-value>
+        <param-value>jdbc:mariadb://127.0.0.1:3306/tiw</param-value>
     </context-param>
     <context-param>
         <param-name>driver</param-name>

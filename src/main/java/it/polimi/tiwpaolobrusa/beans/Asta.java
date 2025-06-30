@@ -11,9 +11,8 @@ public class Asta {
     private Date date;
     private State state;
 
-    public Asta(int id, List<Articolo> items, int initialPrice, int minBid, Date date, State state) {
+    public Asta(int id, int initialPrice, int minBid, Date date, State state) {
         this.id = id;
-        this.items = items;
         this.initialPrice = initialPrice;
         this.minBid = minBid;
         this.date = date;
