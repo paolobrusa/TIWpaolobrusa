@@ -1,9 +1,14 @@
 package it.polimi.tiwpaolobrusa.dao;
 
+import it.polimi.tiwpaolobrusa.beans.Articolo;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArticoloDAO {
     private final Connection connection;
@@ -12,17 +17,70 @@ public class ArticoloDAO {
         this.connection = connection;
     }
 
-    public void addArticolo(int code, String name, String description, String owner, String path, int price) throws SQLException {
-        String query = "INSERT into articolo (codice, proprietario, nome, descrizione, immaginepath, prezzo) values (?, ?, ?, ?, ?, ?)";
+    public List<Articolo> getArticoli(String username) throws SQLException {
+        List<Articolo> articoli = new ArrayList<Articolo>();
+        String query = "SELECT codice, nome, descrizione, immaginepath, prezzo FROM articolo WHERE proprietario = ?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try{
+            ps = connection.prepareStatement(query);
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                Articolo a = new Articolo(rs.getInt("codice"), rs.getString("nome"), rs.getString("descrizione"), rs.getString("immaginepath"), rs.getInt("prezzo"));
+                articoli.add(a);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+        return articoli;
+    }
+
+    public List<Articolo> getArticoli(List<Integer> ids) throws SQLException {
+        List<Articolo> articoli = new ArrayList<Articolo>();
+        String placeholders = ids.stream()
+                .map(i -> "?")
+                .collect(Collectors.joining(","));
+        String query = "SELECT * FROM articolo WHERE id IN (" + placeholders + ")";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Articolo a = new Articolo(rs.getInt("codice"), rs.getString("nome"), rs.getString("descrizione"), rs.getString("immaginepath"), rs.getInt("prezzo"));
+                articoli.add(a);
+            }
+        }
+        catch (SQLException e){
+            throw new SQLException("Cant get articolo");
+        }
+        finally{
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                throw new SQLException("Close ps failed");
+            }
+            try{
+                rs.close();
+            }
+            catch (SQLException e){
+                throw new SQLException("Close rs failed");
+            }
+        }
+        return articoli;
+    }
+
+    public void addArticolo(String name, String description, String owner, String path, int price) throws SQLException {
+        String query = "INSERT into articolo (proprietario, nome, descrizione, immaginepath, prezzo) values (?, ?, ?, ?, ?)";
         PreparedStatement ps = null;
         try {
             ps = connection.prepareStatement(query);
-            ps.setInt(1, code);
-            ps.setString(2, owner);
-            ps.setString(3, name);
-            ps.setString(4, description);
-            ps.setString(5, path);
-            ps.setInt(6, price);
+            ps.setString(1, owner);
+            ps.setString(2, name);
+            ps.setString(3, description);
+            ps.setString(4, path);
+            ps.setInt(5, price);
             ps.executeUpdate();
         }
         catch (SQLException e) {

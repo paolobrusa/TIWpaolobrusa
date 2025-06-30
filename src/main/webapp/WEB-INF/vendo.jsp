@@ -19,6 +19,17 @@
         <p>Gestisci le tue aste</p>
     </div>
 
+    <%
+        String errorMessage = (String) request.getAttribute("errorMessage");
+        if (errorMessage != null) {
+    %>
+    <div class="error-message">
+        <%= errorMessage %>
+    </div>
+    <%
+        }
+    %>
+
     <!-- Sezioni Aste Affiancate -->
     <div class="tables-container">
         <!-- Sezione Aste Aperte -->
@@ -158,6 +169,104 @@
                 </c:otherwise>
             </c:choose>
         </div>
+    </div>
+
+    <!-- Sezioni Form Affiancate -->
+    <div class="forms-container">
+        <!-- Form Creazione Articolo -->
+        <div class="form-container">
+            <div class="form-header">
+                <h2 class="form-title article-title">Crea Articolo</h2>
+                <p class="form-subtitle">Aggiungi un nuovo articolo</p>
+            </div>
+
+            <form method="post" class="form-content">
+                <input type="hidden" name="action" value="addArticolo"/>
+                <div class="input-group">
+                    <label for="nome" class="input-label">Nome Articolo</label>
+                    <input type="text" id="nome" name="nome" class="form-input" required placeholder="Nome articolo">
+                </div>
+
+                <div class="input-group">
+                    <label for="descrizione" class="input-label">Descrizione</label>
+                    <textarea id="descrizione" name="descrizione" class="form-textarea" required placeholder="Descrizione" rows="3"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="path" class="input-label">Path Immagine</label>
+                    <input type="text" id="path" name="path" class="form-input" placeholder="URL o percorso dell'immagine">
+                </div>
+
+                <div class="input-group">
+                    <label for="prezzo" class="input-label">Prezzo Base (€)</label>
+                    <input type="number" id="prezzo" name="prezzo" class="form-input" step="1" min="1" required placeholder="0">
+                </div>
+
+                <button type="submit" class="btn-submit btn-article">
+                    <span class="btn-icon">📦</span>
+                    Crea Articolo
+                </button>
+            </form>
+        </div>
+
+        <!-- Form Creazione Asta -->
+        <div class="form-container">
+            <div class="form-header">
+                <h2 class="form-title auction-title">Crea Asta</h2>
+                <p class="form-subtitle">Crea una nuova asta</p>
+            </div>
+
+            <form method="post" class="form-content">
+                <input type="hidden" name="action" value="createAsta"/>
+                <div class="input-group">
+                    <label class="input-label">Seleziona Articoli</label>
+                    <div class="checkbox-container">
+                        <c:choose>
+                            <c:when test="${not empty articoli}">
+                                <c:forEach var="articolo" items="${articoli}">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="articolo_${articolo.code}" name="codice" value="${articolo.code}" class="checkbox-input">
+                                        <label for="articolo_${articolo.code}" class="checkbox-label">
+                                            <span class="checkbox-name">${articolo.name}</span>
+                                            <span class="checkbox-price">€<fmt:formatNumber value="${articolo.price}" pattern="#,##0.00"/></span>
+                                        </label>
+                                    </div>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="no-articles-message">
+                                    <span class="no-articles-icon">📦</span>
+                                    <p>Nessun articolo disponibile. Crea prima un articolo.</p>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="minBid" class="input-label">Rilancio Minimo (€)</label>
+                    <input type="number" id="minBid" name="minBid" class="form-input" step="1" min="1" required placeholder="0">
+                </div>
+
+                <div class="input-group">
+                    <label for="dataScadenza" class="input-label">Data Scadenza</label>
+                    <input type="datetime-local" id="dataScadenza" name="dataScadenza" class="form-input" required>
+                </div>
+
+                <button type="submit" class="btn-submit btn-auction" ${empty articoli ? 'disabled' : ''}>
+                    <span class="btn-icon">🏆</span>
+                    Crea Asta
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bottone per tornare alla homepage -->
+    <div class="homepage-button-container">
+        <a href="${pageContext.request.contextPath}/Homepage" class="btn-homepage">
+            <span class="btn-icon">🏠</span>
+            Torna alla Homepage
+        </a>
     </div>
 
     <!-- Messaggio se non ci sono aste -->

@@ -3,11 +3,11 @@ package it.polimi.tiwpaolobrusa.dao;
 import it.polimi.tiwpaolobrusa.beans.Asta;
 import it.polimi.tiwpaolobrusa.beans.State;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AstaDAO {
@@ -26,7 +26,7 @@ public class AstaDAO {
             ps = connection.prepareStatement(query);
             ps.setString(1, username);
             rs = ps.executeQuery();
-            while (rs.next()) {//MANCA TUTTO IL CODICE
+            while (rs.next()) {
                 Asta a = new Asta(rs.getInt("id"), rs.getInt("prezzoiniziale"), rs.getInt("rialzomin"),
                         rs.getDate("scadenza"), State.valueOf(rs.getString("stato")));
                 asta.add(a);
@@ -50,7 +50,53 @@ public class AstaDAO {
         return asta;
     }
 
-    public void addAsta(List<Integer> cods) throws SQLException {
+    public int addAsta(int initialPrice, int minBid, LocalDateTime date) throws SQLException {
+        String query = "INSERT into asta (prezzoiniziale, rialzomin, scadenza) values (?, ?, ?)";
+        PreparedStatement ps = null;
+        int idAsta = 0;
+        try {
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, initialPrice);
+            ps.setInt(2, minBid);
+            ps.setObject(3, Timestamp.valueOf(date));
+            ps.executeUpdate();
+            idAsta = ps.getGeneratedKeys().getInt(1);
+        }
+        catch (SQLException e) {
+            throw new SQLException("Can't add Asta");
+        }
+        finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                throw new SQLException("Error closing statement");
+            }
+        }
+        return idAsta;
+    }
 
+    public void addArticoliAsta(int idAsta, List<Integer> cods) throws SQLException {
+        String query = "INSERT into articolilista (idasta, codarticolo) values (?, ?)";
+        PreparedStatement ps = null;
+        try{
+            ps = connection.prepareStatement(query);
+            for (Integer codArt : cods) {
+                ps.setInt(1, idAsta);
+                ps.setInt(2, codArt);
+                ps.addBatch();
+            }
+            ps.executeUpdate();
+        }
+        catch (SQLException e) {
+            throw new SQLException("Can't add Articoli");
+        }
+        finally {
+            try{
+                ps.close();
+            }
+            catch (SQLException e){
+                throw new SQLException("Error closing statement");
+            }
+        }
     }
 }

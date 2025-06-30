@@ -1,5 +1,6 @@
 package it.polimi.tiwpaolobrusa.controllers;
 
+import it.polimi.tiwpaolobrusa.beans.Articolo;
 import it.polimi.tiwpaolobrusa.beans.Asta;
 import it.polimi.tiwpaolobrusa.dao.ArticoloDAO;
 import it.polimi.tiwpaolobrusa.dao.AstaDAO;
@@ -16,7 +17,11 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @WebServlet("/Vendo")
@@ -50,11 +55,15 @@ public class Vendo extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         AstaDAO aDAO = new AstaDAO(con);
+        ArticoloDAO artDAO = new ArticoloDAO(con);
         List<Asta> aste;
+        List<Articolo> articoli;
         try{
             aste = aDAO.getAste(request.getSession().getAttribute("user").toString());
+            articoli = artDAO.getArticoli(request.getSession().getAttribute("user").toString());
             String path = "/WEB-INF/vendo.jsp";
             request.setAttribute("aste", aste);
+            request.setAttribute("articoli", articoli);
             dispatcher = request.getRequestDispatcher(path);
             dispatcher.forward(request, response);
         }
@@ -65,25 +74,25 @@ public class Vendo extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(request.getParameter("action").equals("addArticolo")){
-            String c = request.getParameter("codice");
             String n = request.getParameter("nome");
             String d = request.getParameter("descrizione");
-            String o = request.getParameter("proprietario");
+            String o = request.getSession().getAttribute("user").toString();
             String path = request.getParameter("path");
             String p = request.getParameter("prezzo");
-            if (c == null || n == null || d == null || o == null || path == null || p == null) {
+            if (n == null || d == null || o == null || path == null || p == null) {
                 request.setAttribute("errorMessage", "Parametri non validi");
                 dispatcher.forward(request, response);
                 return;
             }
             ArticoloDAO aDAO = new ArticoloDAO(con);
             try {
-                aDAO.addArticolo(Integer.parseInt(c), n, d, o, path, Integer.parseInt(p));
+                aDAO.addArticolo(n, d, o, path, Integer.parseInt(p));
             } catch (SQLException e) {
                 request.setAttribute("errorMessage", e.getCause().getMessage());
                 dispatcher.forward(request, response);
                 return;
             }
+            response.sendRedirect(request.getContextPath() + "/Vendo");
         }
         if(request.getParameter("action").equals("createAsta")){
             String[] c = request.getParameterValues("codice");
@@ -102,7 +111,32 @@ public class Vendo extends HttpServlet {
                     return;
                 }
             }
-            AstaDAO aDAO = new AstaDAO(con);
+            ArticoloDAO aDao = new ArticoloDAO(con);
+            List<Articolo> articoli;
+            try {
+                articoli = aDao.getArticoli(cods);
+            } catch (SQLException e) {
+                request.setAttribute("errorMessage", e.getCause().getMessage());
+                dispatcher.forward(request, response);
+                return;
+            }
+            AstaDAO aDao2 = new AstaDAO(con);
+            int idAsta = 0;
+            try {
+                idAsta = aDao2.addAsta(articoli.stream().mapToInt(Articolo::getPrice).sum(), Integer.parseInt(request.getParameter("minBid")), LocalDateTime.parse(request.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            } catch (SQLException e) {
+                request.setAttribute("errorMessage", e.getCause().getMessage());
+                dispatcher.forward(request, response);
+                return;
+            }
+            try {
+                aDao2.addArticoliAsta(idAsta, cods);
+            } catch (SQLException e) {
+                request.setAttribute("errorMessage", e.getCause().getMessage());
+                dispatcher.forward(request, response);
+                return;
+            }
+            response.sendRedirect(request.getContextPath() + "/Vendo");
         }
     }
 

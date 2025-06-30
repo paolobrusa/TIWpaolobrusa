@@ -8,11 +8,10 @@ public class Articolo {
     private String path;
     private int price;
 
-    public Articolo(int code, String name, String description, String owner, String path, int price) {
+    public Articolo(int code, String name, String description, String path, int price) {
         this.code = code;
         this.name = name;
         this.description = description;
-        this.owner = owner;
         this.path = path;
         this.price = price;
     }
