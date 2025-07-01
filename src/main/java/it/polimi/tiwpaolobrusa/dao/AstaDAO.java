@@ -60,7 +60,7 @@ public class AstaDAO {
             ps.setInt(2, minBid);
             ps.setObject(3, Timestamp.valueOf(date));
             ps.executeUpdate();
-            idAsta = ps.getGeneratedKeys().getInt(1);
+            idAsta = ps.getGeneratedKeys().getInt("id");
         }
         catch (SQLException e) {
             throw new SQLException("Can't add Asta");

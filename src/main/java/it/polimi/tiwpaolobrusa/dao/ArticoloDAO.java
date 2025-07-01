@@ -41,11 +41,14 @@ public class ArticoloDAO {
         String placeholders = ids.stream()
                 .map(i -> "?")
                 .collect(Collectors.joining(","));
-        String query = "SELECT * FROM articolo WHERE id IN (" + placeholders + ")";
+        String query = "SELECT * FROM articolo WHERE codice IN (" + placeholders + ")";
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = connection.prepareStatement(query);
+            for (int i = 0; i < ids.size(); i++) {
+                ps.setInt(i + 1, ids.get(i));
+            }
             rs = ps.executeQuery();
             while (rs.next()) {
                 Articolo a = new Articolo(rs.getInt("codice"), rs.getString("nome"), rs.getString("descrizione"), rs.getString("immaginepath"), rs.getInt("prezzo"));
@@ -62,7 +65,7 @@ public class ArticoloDAO {
                 throw new SQLException("Close ps failed");
             }
             try{
-                rs.close();
+                if(rs != null) rs.close();
             }
             catch (SQLException e){
                 throw new SQLException("Close rs failed");

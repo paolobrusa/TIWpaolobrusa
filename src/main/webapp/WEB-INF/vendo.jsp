@@ -250,7 +250,7 @@
 
                 <div class="input-group">
                     <label for="dataScadenza" class="input-label">Data Scadenza</label>
-                    <input type="datetime-local" id="dataScadenza" name="dataScadenza" class="form-input" required>
+                    <input type="datetime-local" id="dataScadenza" name="date" class="form-input" required step="1">
                 </div>
 
                 <button type="submit" class="btn-submit btn-auction" ${empty articoli ? 'disabled' : ''}>

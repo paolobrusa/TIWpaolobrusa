@@ -116,21 +116,22 @@ public class Vendo extends HttpServlet {
             try {
                 articoli = aDao.getArticoli(cods);
             } catch (SQLException e) {
-                request.setAttribute("errorMessage", e.getCause().getMessage());
+                e.printStackTrace();
+                request.setAttribute("errorMessage", e.getCause().getMessage()); //da sistemare i dispatcher
                 dispatcher.forward(request, response);
                 return;
             }
             AstaDAO aDao2 = new AstaDAO(con);
             int idAsta = 0;
             try {
-                idAsta = aDao2.addAsta(articoli.stream().mapToInt(Articolo::getPrice).sum(), Integer.parseInt(request.getParameter("minBid")), LocalDateTime.parse(request.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                idAsta = aDao2.addAsta(articoli.stream().mapToInt(Articolo::getPrice).sum(), Integer.parseInt(request.getParameter("minBid")), LocalDateTime.parse(request.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
             } catch (SQLException e) {
                 request.setAttribute("errorMessage", e.getCause().getMessage());
                 dispatcher.forward(request, response);
                 return;
             }
             try {
-                aDao2.addArticoliAsta(idAsta, cods);
+                aDao2.addArticoliAsta(idAsta, cods); //errore qui
             } catch (SQLException e) {
                 request.setAttribute("errorMessage", e.getCause().getMessage());
                 dispatcher.forward(request, response);
