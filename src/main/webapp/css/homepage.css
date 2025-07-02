@@ -184,7 +184,43 @@ body::before {
     transform: translateY(-1px);
 }
 
-/* Responsive design */
+.logout-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn-logout {
+    display: inline-block;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 50%, #9b2c2c 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 16px rgba(229, 62, 62, 0.3);
+    border: 2px solid transparent;
+}
+
+.btn-logout:hover {
+    background: linear-gradient(135deg, #c53030 0%, #9b2c2c 50%, #742a2a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(229, 62, 62, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-logout:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+}
+
 @media (max-width: 768px) {
     .homepage-container {
         padding: 2rem;

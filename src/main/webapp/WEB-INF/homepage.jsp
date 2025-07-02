@@ -42,6 +42,9 @@
             <a href="${pageContext.request.contextPath}/Vendo" class="btn-option">Vai ad Acquisto</a>
         </div>
     </div>
+    <div class="logout-container">
+        <a href="${pageContext.request.contextPath}/Logout" class="btn-logout">LogOut</a>
+    </div>
 </div>
 </body>
 </html>

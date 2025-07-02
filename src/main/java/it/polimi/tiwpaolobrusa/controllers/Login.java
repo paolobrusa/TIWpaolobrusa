@@ -46,6 +46,10 @@ public class Login extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String logout = request.getParameter("logout");
+        if ("1".equals(logout)) {
+            request.setAttribute("errorMessage", "Hai effettuato il logout");
+        }
         String path = "/WEB-INF/login.jsp";
         dispatcher = request.getRequestDispatcher(path);
         dispatcher.forward(request, response);

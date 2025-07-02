@@ -81,7 +81,10 @@
                                         <fmt:formatDate value="${asta.date}" pattern="dd/MM/yyyy HH:mm"/>
                                     </td>
                                     <td class="actions">
-                                        <a href="dettaglioasta.jsp?id=${asta.id}" class="btn-dettaglio btn-active">
+                                        <c:url value="Dettaglio" var="regURL">
+                                            <c:param name="idasta" value="${asta.id}" />
+                                        </c:url>
+                                        <a href="${regURL}" class="btn-dettaglio btn-active">
                                             Gestisci
                                         </a>
                                     </td>
@@ -150,7 +153,10 @@
                                         <fmt:formatDate value="${asta.date}" pattern="dd/MM/yyyy HH:mm"/>
                                     </td>
                                     <td class="actions">
-                                        <a href="dettaglioasta.jsp?id=${asta.id}" class="btn-dettaglio btn-closed">
+                                        <c:url value="Dettaglio" var="regURL">
+                                            <c:param name="idasta" value="${asta.id}" />
+                                        </c:url>
+                                        <a href="${regURL}" class="btn-dettaglio btn-closed">
                                             Risultati
                                         </a>
                                     </td>

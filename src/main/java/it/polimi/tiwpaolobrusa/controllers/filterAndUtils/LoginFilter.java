@@ -1,4 +1,4 @@
-package it.polimi.tiwpaolobrusa.controllers.filter;
+package it.polimi.tiwpaolobrusa.controllers.filterAndUtils;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -11,14 +11,14 @@ import java.util.Arrays;
 @WebFilter("/*")
 public class LoginFilter implements Filter {
 
-    private static final String[] paths = {"/Homepage", "/Vendo", "/css/aste.css", "/css/homepage.css"};
+    private static final String[] paths = {"/Homepage", "/Vendo", "/css/aste.css", "/css/homepage.css", "/Logout"};
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request  = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String path = request.getRequestURI().substring(request.getContextPath().length());
-        if (path.equals("/Login") || path.equals("/css/login.css")) {
+        if ((path.equals("/Login") || path.equals("/css/login.css")) && request.getSession().getAttribute("user") == null) {
             filterChain.doFilter(request, response);
         }
         else if (request.getSession().getAttribute("user") != null && request.getSession(false) != null && Arrays.asList(paths).contains(path)){

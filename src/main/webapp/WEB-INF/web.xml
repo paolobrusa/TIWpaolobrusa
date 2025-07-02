@@ -20,6 +20,9 @@
         <param-name>driver</param-name>
         <param-value>org.mariadb.jdbc.Driver</param-value>
     </context-param>
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
     <welcome-file-list>
         <welcome-file>Login</welcome-file>
     </welcome-file-list>

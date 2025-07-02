@@ -1,14 +1,17 @@
 package it.polimi.tiwpaolobrusa.beans;
 
+import java.util.Date;
+
 public class Offerta {
     private String usnUser;
     private int bid;
-    private final Asta asta;
+    private Asta asta;
+    private Date date;
 
-    public Offerta(String usnUser, int bid, Asta asta) {
+    public Offerta(String usnUser, int bid, Date date) {
         this.usnUser = usnUser;
         this.bid = bid;
-        this.asta = asta;
+        this.date = date;
     }
 
     public String getUsnUser() {
@@ -30,4 +33,8 @@ public class Offerta {
     public Asta getAsta() {
         return asta;
     }
+
+    public Date getDate() {return date;}
+
+    public void setDate(Date date) {this.date = date;}
 }

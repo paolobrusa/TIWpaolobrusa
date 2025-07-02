@@ -68,7 +68,7 @@ public class Vendo extends HttpServlet {
             dispatcher.forward(request, response);
         }
         catch (Exception e){
-            e.printStackTrace();
+            e.printStackTrace(); //QUA MAGARI MANDA ALLA HOMEPAGE CON ERRORE
         }
     }
 
@@ -116,7 +116,6 @@ public class Vendo extends HttpServlet {
             try {
                 articoli = aDao.getArticoli(cods);
             } catch (SQLException e) {
-                e.printStackTrace();
                 request.setAttribute("errorMessage", e.getCause().getMessage()); //da sistemare i dispatcher
                 dispatcher.forward(request, response);
                 return;
@@ -131,7 +130,7 @@ public class Vendo extends HttpServlet {
                 return;
             }
             try {
-                aDao2.addArticoliAsta(idAsta, cods); //errore qui
+                aDao2.addArticoliAsta(idAsta, cods);
             } catch (SQLException e) {
                 request.setAttribute("errorMessage", e.getCause().getMessage());
                 dispatcher.forward(request, response);
@@ -140,6 +139,9 @@ public class Vendo extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Vendo");
         }
     }
+    //TODO  La lista delle aste nella pagina VENDO è ordinata per
+    //TODO data+ora crescente. L’elenco riporta: codice e nome degli articoli compresi nell’asta, offerta massima, tempo
+    //TODO mancante (numero di giorni e ore) tra il momento (data ora) del login e la data e ora di chiusura dell’asta
 
     public void destroy() {
         if (con != null) {
