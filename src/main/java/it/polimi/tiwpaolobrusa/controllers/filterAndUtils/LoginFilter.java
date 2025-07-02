@@ -11,7 +11,7 @@ import java.util.Arrays;
 @WebFilter("/*")
 public class LoginFilter implements Filter {
 
-    private static final String[] paths = {"/Homepage", "/Vendo", "/css/aste.css", "/css/homepage.css", "/Logout"};
+    private static final String[] paths = {"/Homepage", "/Vendo", "/css/aste.css", "/css/homepage.css", "/Logout", "/Dettaglio", "/css/dettaglioasta.css"};
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

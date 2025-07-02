@@ -139,8 +139,7 @@ public class Vendo extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Vendo");
         }
     }
-    //TODO  La lista delle aste nella pagina VENDO è ordinata per
-    //TODO data+ora crescente. L’elenco riporta: codice e nome degli articoli compresi nell’asta, offerta massima, tempo
+    //TODO L’elenco riporta: codice e nome degli articoli compresi nell’asta, offerta massima, tempo
     //TODO mancante (numero di giorni e ore) tra il momento (data ora) del login e la data e ora di chiusura dell’asta
 
     public void destroy() {

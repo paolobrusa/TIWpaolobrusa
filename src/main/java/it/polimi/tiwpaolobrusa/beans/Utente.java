@@ -7,9 +7,8 @@ public class Utente {
     private String surname;
     private String address;
 
-    public Utente(String username, String pwd, String name, String surname, String address) {
+    public Utente(String username, String name, String surname, String address) {
         this.username = username;
-        this.pwd = pwd;
         this.name = name;
         this.surname = surname;
         this.address = address;

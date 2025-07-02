@@ -16,7 +16,7 @@ public class UtenteDAO {
 
     public Utente getUtente(String username, String pwd) throws SQLException {
         Utente u = null;
-        String query = "SELECT * FROM Utente WHERE username = ? AND pwd = ?";
+        String query = "SELECT username, nome, cognome, indirizzo FROM Utente WHERE username = ? AND pwd = ?";
         ResultSet rs = null;
         PreparedStatement ps = null;
         try {
@@ -25,9 +25,40 @@ public class UtenteDAO {
             ps.setString(2, pwd);
             rs = ps.executeQuery();
             if (rs.next())
-                u = new Utente(rs.getString("username"), rs.getString("pwd"), rs.getString("nome"),rs.getString("cognome"),rs.getString("indirizzo"));
+                u = new Utente(rs.getString("username"), rs.getString("nome"),rs.getString("cognome"),rs.getString("indirizzo"));
             else
                 throw new SQLException("Username or password incorrect");
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
+        finally {
+            try{
+                if(rs != null) rs.close();
+            }catch (SQLException e){
+                throw new SQLException("Error closing resultSet");
+            }
+            try{
+                if(ps != null) ps.close();
+            }catch (SQLException e){
+                throw new SQLException("Error closing statement");
+            }
+        }
+        return u;
+    }
+
+    public Utente getWinner(String username) throws SQLException {
+        Utente u = null;
+        String query = "SELECT username, nome, cognome, indirizzo FROM Utente WHERE username = ?";
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        try {
+            ps = connection.prepareStatement(query);
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            if (rs.next())
+                u = new Utente(rs.getString("username"), rs.getString("nome"),rs.getString("cognome"),rs.getString("indirizzo"));
+            else
+                throw new SQLException("Non c'è l'aggiudicatario ");
         }catch (SQLException e){
             throw new SQLException(e);
         }

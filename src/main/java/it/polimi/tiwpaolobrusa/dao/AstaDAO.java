@@ -27,14 +27,13 @@ public class AstaDAO {
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if(rs.next()){
-                a = new Asta(rs.getInt("id"), rs.getInt("prezzoiniziale"), rs.getInt("rialzominimo"), rs.getDate("scadenza"), State.valueOf(rs.getString("stato")));
+                a = new Asta(rs.getInt("id"), rs.getInt("prezzoiniziale"), rs.getInt("rialzomin"), rs.getDate("scadenza"), State.valueOf(rs.getString("stato")));
             }
             else{
                 throw new SQLException("Asta not found");
             }
         }
         catch(SQLException e){
-            e.printStackTrace();
             throw new SQLException("Asta not exist");
         }
         finally {
@@ -54,7 +53,7 @@ public class AstaDAO {
 
     public List<Asta> getAste(String username) throws SQLException {
         List<Asta> asta = new ArrayList<Asta>();
-        String query = "SELECT DISTINCT id, prezzoiniziale, rialzomin, scadenza, stato FROM Asta JOIN Articolilista ON Asta.id = Articolilista.idasta JOIN Articolo ON Articolilista.codarticolo = Articolo.codice WHERE Articolo.proprietario = ?";
+        String query = "SELECT DISTINCT id, prezzoiniziale, rialzomin, scadenza, stato FROM Asta JOIN Articolilista ON Asta.id = Articolilista.idasta JOIN Articolo ON Articolilista.codarticolo = Articolo.codice WHERE Articolo.proprietario = ? ORDER BY scadenza";
         PreparedStatement ps = null;
         ResultSet rs = null;
         try{

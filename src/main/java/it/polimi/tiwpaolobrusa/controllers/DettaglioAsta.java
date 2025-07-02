@@ -3,8 +3,10 @@ package it.polimi.tiwpaolobrusa.controllers;
 import it.polimi.tiwpaolobrusa.beans.Asta;
 import it.polimi.tiwpaolobrusa.beans.Offerta;
 import it.polimi.tiwpaolobrusa.beans.State;
+import it.polimi.tiwpaolobrusa.beans.Utente;
 import it.polimi.tiwpaolobrusa.dao.AstaDAO;
 import it.polimi.tiwpaolobrusa.dao.OffertaDAO;
+import it.polimi.tiwpaolobrusa.dao.UtenteDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -19,6 +21,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @WebServlet("/Dettaglio")
@@ -59,36 +62,74 @@ public class DettaglioAsta extends HttpServlet {
         }
         catch(NumberFormatException e){
             response.sendRedirect(request.getContextPath() + "/Vendo");
+            return;
         }
         AstaDAO aDao = new AstaDAO(con);
         Asta asta = null;
         try {
             asta = aDao.getState(idasta);
         } catch (SQLException e) {
-            e.printStackTrace();
-            //response.sendRedirect(request.getContextPath() + "/Vendo");
+            request.setAttribute("errorMessage", e.getMessage());
+            String path = "WEB-INF/dettaglioAsta.jsp";
+            dispatcher = request.getRequestDispatcher(path);
+            dispatcher.forward(request, response);
+            return;
         }
         OffertaDAO oDao = new OffertaDAO(con);
-        List<Offerta> o = new ArrayList<Offerta>();
+        List<Offerta> o;
         try{
             o = oDao.getOfferta(idasta);
         } catch (SQLException e) {
-            e.printStackTrace();
-            //response.sendRedirect(request.getContextPath() + "/Vendo");
+            response.sendRedirect(request.getContextPath() + "/Vendo");
+            return;
         }
         if(asta != null && asta.getState() == State.attiva){
-            String path = "WEB-INF/dettaglioAttiva.jsp";
+            String path = "WEB-INF/dettaglioAsta.jsp";
             request.setAttribute("asta", asta);
             request.setAttribute("offerte", o);
             dispatcher = request.getRequestDispatcher(path);
             dispatcher.forward(request, response);
         }
         else if(asta != null && asta.getState() == State.chiusa){
-            String path = "WEB-INF/dettaglioChiusa.jsp";
+            UtenteDAO uDao = new UtenteDAO(con);
+            Offerta winner = null;
+            try {
+                winner = o.stream().max(Comparator.comparing(Offerta::getBid)).get();
+            } catch (Exception e) {
+                request.setAttribute("errorMessage", "Asta chiusa senza aggiudicatario...");
+                String path = "WEB-INF/dettaglioAsta.jsp";
+                dispatcher = request.getRequestDispatcher(path);
+                dispatcher.forward(request, response);
+                return;
+            }
             request.setAttribute("asta", asta);
-            request.setAttribute("offerte", o); //TODO SBAGLIATO VA CORRETTO SECONDO LA SPECIFICA
+            request.setAttribute("offerte", o);
+            Utente u = null;
+            try {
+                u = uDao.getWinner(winner.getUsnUser());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                request.setAttribute("errorMessage", "Non c'è l'aggiudicatario");
+                String path = "WEB-INF/dettaglioAsta.jsp";
+                dispatcher = request.getRequestDispatcher(path);
+                dispatcher.forward(request, response);
+                return;
+            }
+            request.setAttribute("utente", u);
+            request.setAttribute("offertaVincente", winner);
+            String path = "WEB-INF/dettaglioAsta.jsp";
             dispatcher = request.getRequestDispatcher(path);
             dispatcher.forward(request, response);
+        }
+    }
+
+    public void destroy() {
+        if (con != null) {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
