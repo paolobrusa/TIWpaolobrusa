@@ -19,6 +19,7 @@ public class Logout extends HttpServlet {
             session.removeAttribute("user");
             session.invalidate();
         }
-        resp.sendRedirect(req.getContextPath() + "/Login?logout=1");
+        req.getSession().setAttribute("errorMessage", "Hai effettuato il logout");
+        resp.sendRedirect(req.getContextPath() + "/Login");
     }
 }

@@ -20,8 +20,9 @@
     </div>
 
     <%
-        String errorMessage = (String) request.getAttribute("errorMessage");
+        String errorMessage = (String) request.getSession().getAttribute("errorMessage");
         if (errorMessage != null) {
+            request.getSession().removeAttribute("errorMessage");
     %>
     <div class="error-message">
         <%= errorMessage %>
@@ -61,8 +62,8 @@
                         <tr>
                             <th>ID Asta</th>
                             <th>Prezzo Iniziale</th>
-                            <th>Rilancio Minimo</th>
-                            <th>Data Asta</th>
+                            <th>Offerta Massima</th>
+                            <th>Tempo rimanente</th>
                             <th>Azioni</th>
                         </tr>
                         </thead>
@@ -78,7 +79,7 @@
                                         <fmt:formatNumber value="${asta.minBid}" type="currency" currencySymbol="€"/>
                                     </td>
                                     <td class="date">
-                                        <fmt:formatDate value="${asta.date}" pattern="dd/MM/yyyy HH:mm"/>
+                                            ${asta.timeLeft}
                                     </td>
                                     <td class="actions">
                                         <c:url value="Dettaglio" var="regURL">
@@ -133,7 +134,7 @@
                         <tr>
                             <th>ID Asta</th>
                             <th>Prezzo Iniziale</th>
-                            <th>Rilancio Minimo</th>
+                            <th>Offerta Vincente</th>
                             <th>Data Asta</th>
                             <th>Azioni</th>
                         </tr>
@@ -186,8 +187,7 @@
                 <p class="form-subtitle">Aggiungi un nuovo articolo</p>
             </div>
 
-            <form method="post" class="form-content">
-                <input type="hidden" name="action" value="addArticolo"/>
+            <form action="${pageContext.request.contextPath}/AddArticolo" method="post" class="form-content">
                 <div class="input-group">
                     <label for="nome" class="input-label">Nome Articolo</label>
                     <input type="text" id="nome" name="nome" class="form-input" required placeholder="Nome articolo">
@@ -209,7 +209,6 @@
                 </div>
 
                 <button type="submit" class="btn-submit btn-article">
-                    <span class="btn-icon">📦</span>
                     Crea Articolo
                 </button>
             </form>
@@ -221,9 +220,7 @@
                 <h2 class="form-title auction-title">Crea Asta</h2>
                 <p class="form-subtitle">Crea una nuova asta</p>
             </div>
-
-            <form method="post" class="form-content">
-                <input type="hidden" name="action" value="createAsta"/>
+            <form action="${pageContext.request.contextPath}/CreateAsta" method="post" class="form-content">
                 <div class="input-group">
                     <label class="input-label">Seleziona Articoli</label>
                     <div class="checkbox-container">
@@ -241,7 +238,6 @@
                             </c:when>
                             <c:otherwise>
                                 <div class="no-articles-message">
-                                    <span class="no-articles-icon">📦</span>
                                     <p>Nessun articolo disponibile. Crea prima un articolo.</p>
                                 </div>
                             </c:otherwise>
@@ -260,7 +256,6 @@
                 </div>
 
                 <button type="submit" class="btn-submit btn-auction" ${empty articoli ? 'disabled' : ''}>
-                    <span class="btn-icon">🏆</span>
                     Crea Asta
                 </button>
             </form>
@@ -270,23 +265,21 @@
     <!-- Bottone per tornare alla homepage -->
     <div class="homepage-button-container">
         <a href="${pageContext.request.contextPath}/Homepage" class="btn-homepage">
-            <span class="btn-icon">🏠</span>
             Torna alla Homepage
         </a>
     </div>
 
-    <!-- Messaggio se non ci sono aste -->
-    <c:if test="${empty aste}">
-        <div class="no-aste-message main-message">
-            <div class="no-aste-icon">📭</div>
-            <h2>Non ci sono aste</h2>
-            <p>Non hai ancora creato nessuna asta</p>
-            <a href="crea-asta.jsp" class="btn-create-auction">
-                Crea la tua prima asta
-                <span class="btn-arrow">+</span>
-            </a>
-        </div>
-    </c:if>
+<%--    <c:if test="${empty aste}">--%>
+<%--        <div class="no-aste-message main-message">--%>
+<%--            <div class="no-aste-icon">📭</div>--%>
+<%--            <h2>Non ci sono aste</h2>--%>
+<%--            <p>Non hai ancora creato nessuna asta</p>--%>
+<%--            <a href="crea-asta.jsp" class="btn-create-auction">--%>
+<%--                Crea la tua prima asta--%>
+<%--                <span class="btn-arrow">+</span>--%>
+<%--            </a>--%>
+<%--        </div>--%>
+<%--    </c:if>--%>
 </div>
 </body>
 </html>

@@ -10,6 +10,7 @@ public class Asta {
     private int minBid;
     private Date date;
     private State state;
+    private String timeLeft;
 
     public Asta(int id, int initialPrice, int minBid, Date date, State state) {
         this.id = id;
@@ -65,5 +66,13 @@ public class Asta {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public String getTimeLeft() {
+        return timeLeft;
+    }
+
+    public void setTimeLeft(String timeLeft) {
+        this.timeLeft = timeLeft;
     }
 }

@@ -19,7 +19,7 @@ public class ArticoloDAO {
 
     public List<Articolo> getArticoli(String username) throws SQLException {
         List<Articolo> articoli = new ArrayList<Articolo>();
-        String query = "SELECT codice, nome, descrizione, immaginepath, prezzo FROM articolo WHERE proprietario = ?";
+        String query = "SELECT codice, nome, descrizione, immaginepath, prezzo FROM articolo LEFT JOIN articolilista ON codice = codarticolo WHERE proprietario = ? AND codarticolo IS NULL";
         PreparedStatement ps = null;
         ResultSet rs = null;
         try{

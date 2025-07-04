@@ -18,7 +18,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,6 +63,7 @@ public class Vendo extends HttpServlet {
         try{
             aste = aDAO.getAste(request.getSession().getAttribute("user").toString());
             articoli = artDAO.getArticoli(request.getSession().getAttribute("user").toString());
+            timeLeft(aste);
             String path = "/WEB-INF/vendo.jsp";
             request.setAttribute("aste", aste);
             request.setAttribute("articoli", articoli);
@@ -72,75 +75,22 @@ public class Vendo extends HttpServlet {
         }
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if(request.getParameter("action").equals("addArticolo")){
-            String n = request.getParameter("nome");
-            String d = request.getParameter("descrizione");
-            String o = request.getSession().getAttribute("user").toString();
-            String path = request.getParameter("path");
-            String p = request.getParameter("prezzo");
-            if (n == null || d == null || o == null || path == null || p == null) {
-                request.setAttribute("errorMessage", "Parametri non validi");
-                dispatcher.forward(request, response);
-                return;
+    public void timeLeft(List<Asta> aste) {
+        LocalDateTime now = LocalDateTime.now();
+        for (Asta asta : aste) {
+            java.util.Date utilDate = new java.util.Date(asta.getDate().getTime());
+            Duration duration = Duration.between(now, utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+            String d;
+            if(duration.isNegative()){
+                d = "FINITO";
             }
-            ArticoloDAO aDAO = new ArticoloDAO(con);
-            try {
-                aDAO.addArticolo(n, d, o, path, Integer.parseInt(p));
-            } catch (SQLException e) {
-                request.setAttribute("errorMessage", e.getCause().getMessage());
-                dispatcher.forward(request, response);
-                return;
+            else {
+                d = duration.toDays() + ":" + duration.toHoursPart() + ":" + duration.toMinutesPart() + ":" + duration.toSecondsPart();
             }
-            response.sendRedirect(request.getContextPath() + "/Vendo");
-        }
-        if(request.getParameter("action").equals("createAsta")){
-            String[] c = request.getParameterValues("codice");
-            if(c == null || c.length == 0){
-                request.setAttribute("errorMessage", "Devi selezionare almeno 1 articolo");
-                dispatcher.forward(request, response);
-                return;
-            }
-            List<Integer> cods = new ArrayList<>();
-            for (String s : c) {
-                try {
-                    cods.add(Integer.parseInt(s));
-                } catch (Exception e) {
-                    request.setAttribute("errorMessage", e.getCause().getMessage());
-                    dispatcher.forward(request, response);
-                    return;
-                }
-            }
-            ArticoloDAO aDao = new ArticoloDAO(con);
-            List<Articolo> articoli;
-            try {
-                articoli = aDao.getArticoli(cods);
-            } catch (SQLException e) {
-                request.setAttribute("errorMessage", e.getCause().getMessage()); //da sistemare i dispatcher
-                dispatcher.forward(request, response);
-                return;
-            }
-            AstaDAO aDao2 = new AstaDAO(con);
-            int idAsta = 0;
-            try {
-                idAsta = aDao2.addAsta(articoli.stream().mapToInt(Articolo::getPrice).sum(), Integer.parseInt(request.getParameter("minBid")), LocalDateTime.parse(request.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
-            } catch (SQLException e) {
-                request.setAttribute("errorMessage", e.getCause().getMessage());
-                dispatcher.forward(request, response);
-                return;
-            }
-            try {
-                aDao2.addArticoliAsta(idAsta, cods);
-            } catch (SQLException e) {
-                request.setAttribute("errorMessage", e.getCause().getMessage());
-                dispatcher.forward(request, response);
-                return;
-            }
-            response.sendRedirect(request.getContextPath() + "/Vendo");
+            asta.setTimeLeft(d);
         }
     }
-    //TODO L’elenco riporta: codice e nome degli articoli compresi nell’asta, offerta massima, tempo
-    //TODO mancante (numero di giorni e ore) tra il momento (data ora) del login e la data e ora di chiusura dell’asta
+    //TODO L’elenco riporta: codice e nome degli articoli compresi nell’asta (FALLO NEL DETTAGLIO)
 
     public void destroy() {
         if (con != null) {

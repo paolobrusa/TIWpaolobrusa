@@ -46,12 +46,12 @@
 
                 <div class="info-card">
                     <div class="info-label">Prezzo Iniziale</div>
-                    <div class="info-value price">€ <fmt:formatNumber value="${asta.initialPrice}" pattern="#,##0.00"/></div>
+                    <div class="info-value price">€ <fmt:formatNumber value="${asta.initialPrice}"/></div>
                 </div>
 
                 <div class="info-card">
                     <div class="info-label">Offerta Minima</div>
-                    <div class="info-value min-bid">€ <fmt:formatNumber value="${asta.minBid}" pattern="#,##0.00"/></div>
+                    <div class="info-value min-bid">€ <fmt:formatNumber value="${asta.minBid}"/></div>
                 </div>
 
                 <div class="info-card">
@@ -79,9 +79,8 @@
             <c:if test="${asta.state == 'attiva'}">
                 <div class="asta-actions">
                     <form method="post">
-                        <input type="hidden" name="astaId" value="${asta.id}">
+                        <input type="hidden" name="idAsta" value="${asta.id}">
                         <button type="submit" class="btn-close-auction">
-                            <span class="btn-icon">🔒</span>
                             Chiudi Asta
                         </button>
                     </form>
@@ -99,7 +98,7 @@
                         </div>
                         <div class="winning-bid">
                             <h4>Prezzo finale</h4>
-                            <p class="winning-amount">€ <fmt:formatNumber value="${offertaVincente.bid}" pattern="#,##0.00"/></p>
+                            <p class="winning-amount">€ <fmt:formatNumber value="${offertaVincente.bid}"/></p>
                         </div>
                     </div>
                 </div>
@@ -108,7 +107,7 @@
 
         <div class="offerte-container">
             <div class="offerte-header">
-                <h3 class="offerte-title">📋 Lista Offerte</h3>
+                <h3 class="offerte-title">Lista Offerte</h3>
                 <div class="offerte-count">
                     <c:choose>
                         <c:when test="${not empty offerte}">
@@ -137,7 +136,7 @@
                             <c:forEach var="offerta" items="${offerte}" varStatus="status">
                                 <tr class="offerta-row ${status.index == 0 && asta.state == 'chiusa' ? 'winning-row' : ''}">
                                     <td class="offerta-user">${offerta.usnUser}</td>
-                                    <td class="offerta-bid">€ <fmt:formatNumber value="${offerta.bid}" pattern="#,##0.00"/></td>
+                                    <td class="offerta-bid">€ <fmt:formatNumber value="${offerta.bid}"/></td>
                                     <td class="offerta-date">
                                         <fmt:formatDate value="${offerta.date}" pattern="dd/MM/yyyy"/>
                                         <br>
@@ -164,8 +163,7 @@
                 </c:when>
                 <c:otherwise>
                     <div class="no-offerte-message">
-                        <div class="no-offerte-icon">📭</div>
-                        <h3>Nessuna offerta ricevuta</h3>
+                        <div class="no-offerte-icon">Nessuna offerta ricevuta</div>
                     </div>
                 </c:otherwise>
             </c:choose>
@@ -174,7 +172,6 @@
     </c:if>
     <div class="homepage-button-container">
         <a href="${pageContext.request.contextPath}/Vendo" class="btn-homepage">
-            <span class="btn-icon">🏠</span>
             Torna a Vendo
         </a>
     </div>

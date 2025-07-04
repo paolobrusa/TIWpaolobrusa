@@ -1,7 +1,6 @@
-package it.polimi.tiwpaolobrusa.controllers;
+package it.polimi.tiwpaolobrusa.controllers.filterAndUtils;
 
-import it.polimi.tiwpaolobrusa.beans.Utente;
-import it.polimi.tiwpaolobrusa.dao.UtenteDAO;
+import it.polimi.tiwpaolobrusa.dao.ArticoloDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -9,25 +8,24 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-@WebServlet("/Login")
-public class Login extends HttpServlet {
+@WebServlet ("/AddArticolo")
+public class AddArticolo extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection con = null;
-    RequestDispatcher dispatcher = null;
 
-    public Login() {
+    public AddArticolo() {
         super();
     }
 
-    public void init() throws ServletException{
+    public void init() throws ServletException {
         ServletContext context = getServletContext();
         String user = context.getInitParameter("user");
         String pwd = context.getInitParameter("pwd");
@@ -36,7 +34,7 @@ public class Login extends HttpServlet {
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Can't load driver");     //metti qualcosa qui per disconnessione sessione
+            throw new RuntimeException("Can't load driver");
         }
         try {
             con = DriverManager.getConnection(url, user, pwd);
@@ -46,29 +44,29 @@ public class Login extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String errorMessage = (String) request.getSession().getAttribute("errorMessage");
-        if (errorMessage != null) {
-            request.getSession().removeAttribute("errorMessage");
-            request.setAttribute("errorMessage", errorMessage);
-        }
-        String path = "/WEB-INF/login.jsp";
-        dispatcher = request.getRequestDispatcher(path);
-        dispatcher.forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/Vendo");
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        UtenteDAO uDAO = new UtenteDAO(con);
-        Utente user = null;
-        try {
-            user = uDAO.getUtente(request.getParameter("username"), request.getParameter("password"));
-        } catch (SQLException e) {
-            request.setAttribute("errorMessage", e.getCause().getMessage());
-            dispatcher.forward(request, response);
+        String n = request.getParameter("nome");
+        String d = request.getParameter("descrizione");
+        String o = request.getSession().getAttribute("user").toString();
+        String path = request.getParameter("path");
+        String p = request.getParameter("prezzo");
+        if (n == null || d == null || o == null || path == null || p == null) {
+            request.getSession().setAttribute("errorMessage", "Parametri non validi");
+            response.sendRedirect(request.getContextPath() + "/Vendo");
             return;
         }
-        HttpSession session = request.getSession(true);
-        session.setAttribute("user", user.getUsername());
-        response.sendRedirect(request.getContextPath() + "/Homepage");
+        ArticoloDAO aDAO = new ArticoloDAO(con);
+        try {
+            aDAO.addArticolo(n, d, o, path, Integer.parseInt(p));
+        } catch (SQLException e) {
+            request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
+            response.sendRedirect(request.getContextPath() + "/Vendo");
+            return;
+        }
+        response.sendRedirect(request.getContextPath() + "/Vendo");
     }
 
     public void destroy() {
