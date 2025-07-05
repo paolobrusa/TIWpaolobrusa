@@ -74,7 +74,10 @@
                                     ${asta.timeLeft}
                                 </td>
                                 <td class="actions">
-                                    <a href="${pageContext.request.contextPath}/asta/dettaglio?id=${asta.id}" class="btn-dettaglio btn-active">
+                                    <c:url value="/Offerta" var="regURL">
+                                        <c:param name="idasta" value="${asta.id}" />
+                                    </c:url>
+                                    <a href="${regURL}" class="btn-dettaglio btn-active">
                                         Dettagli
                                     </a>
                                 </td>
@@ -122,7 +125,10 @@
                                     <fmt:formatDate value="${aggiudicazione.date}" pattern="dd/MM/yyyy HH:mm" />
                                 </td>
                                 <td class="actions">
-                                    <a href="${pageContext.request.contextPath}/asta/dettaglio?id=${aggiudicazione.idAsta}">
+                                    <c:url value="/Offerta" var="regURL">
+                                        <c:param name="idasta" value="${aggiudicazione.idAsta}" />
+                                    </c:url>
+                                    <a href="${regURL}">
                                         <span class="status-badge status-won">Dettagli</span>
                                     </a>
                                 </td>
@@ -139,6 +145,11 @@
                 </c:otherwise>
             </c:choose>
         </div>
+    </div>
+    <div class="homepage-button-container">
+        <a href="${pageContext.request.contextPath}/Homepage" class="btn-homepage">
+            Torna alla Homepage
+        </a>
     </div>
 </div>
 </body>

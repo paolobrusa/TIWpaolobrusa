@@ -109,7 +109,7 @@ public class ArticoloDAO {
             ps.setInt(1, idAsta);
             rs = ps.executeQuery();
             while(rs.next()){
-                Articolo a = new Articolo(rs.getInt("codice"), rs.getString("name"), rs.getString("descrizione"), rs.getString("immaginepath"), rs.getInt("prezzo") );
+                Articolo a = new Articolo(rs.getInt("codice"), rs.getString("nome"), rs.getString("descrizione"), rs.getString("immaginepath"), rs.getInt("prezzo") );
                 articoli.add(a);
             }
         }

@@ -79,22 +79,17 @@ public class DettaglioAsta extends HttpServlet {
             return;
         }
         AstaDAO aDao = new AstaDAO(con);
-        Asta asta = null;
+        OffertaDAO oDao = new OffertaDAO(con);
+        Asta asta;
+        List<Offerta> o;
         try {
             asta = aDao.getState(idasta, request.getSession().getAttribute("user").toString());
+            o = oDao.getOfferta(idasta);
         } catch (SQLException e) {
             request.setAttribute("errorMessage", e.getMessage());
             String path = "WEB-INF/dettaglioAsta.jsp";
             dispatcher = request.getRequestDispatcher(path);
             dispatcher.forward(request, response);
-            return;
-        }
-        OffertaDAO oDao = new OffertaDAO(con);
-        List<Offerta> o;
-        try{
-            o = oDao.getOfferta(idasta);
-        } catch (SQLException e) {
-            response.sendRedirect(request.getContextPath() + "/Vendo");
             return;
         }
         if(asta != null && asta.getState() == State.attiva){
@@ -108,27 +103,22 @@ public class DettaglioAsta extends HttpServlet {
             UtenteDAO uDao = new UtenteDAO(con);
             Offerta winner = null;
             winner = o.stream().max(Comparator.comparing(Offerta::getBid)).orElse(null);
-            if(winner == null) {
-                request.setAttribute("errorMessage", "Asta chiusa senza aggiudicatario...");
-                String path = "WEB-INF/dettaglioAsta.jsp";
-                dispatcher = request.getRequestDispatcher(path);
-                dispatcher.forward(request, response);
-                return;
-            }
             request.setAttribute("asta", asta);
             request.setAttribute("offerte", o);
             Utente u = null;
-            try {
-                u = uDao.getWinner(winner.getUsnUser());
-            } catch (SQLException e) {
-                e.printStackTrace();
-                request.setAttribute("errorMessage", "Non c'è l'aggiudicatario");
-                String path = "WEB-INF/dettaglioAsta.jsp";
-                dispatcher = request.getRequestDispatcher(path);
-                dispatcher.forward(request, response);
-                return;
+            if (winner != null) {
+                try {
+                    u = uDao.getWinner(winner.getUsnUser());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    request.setAttribute("errorMessage", "Non c'è l'aggiudicatario");
+                    String path = "WEB-INF/dettaglioAsta.jsp";
+                    dispatcher = request.getRequestDispatcher(path);
+                    dispatcher.forward(request, response);
+                    return;
+                }
+                request.setAttribute("utente", u);
             }
-            request.setAttribute("utente", u);
             request.setAttribute("offertaVincente", winner);
             String path = "WEB-INF/dettaglioAsta.jsp";
             dispatcher = request.getRequestDispatcher(path);

@@ -48,7 +48,7 @@ public class OffertaDAO {
 
     public List<Offerta> getOfferteAggiudicate(String user) throws SQLException {
         List<Offerta> offerta = new ArrayList<Offerta>();
-        String query = "SELECT usnutente, offertaprezzo, dataora, idasta FROM Offerta WHERE usnutente = ? ORDER BY dataora";
+        String query = "SELECT usnutente, offertaprezzo, dataora, idasta FROM Offerta JOIN asta ON idasta = id WHERE stato = 'chiusa' AND usnutente = ? ORDER BY offertaprezzo DESC, dataora DESC LIMIT 1";
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -91,7 +91,7 @@ public class OffertaDAO {
             ps.executeUpdate();
         }
         catch (SQLException e) {
-            throw new SQLException(e);
+            throw new SQLException("L offerta deve essere maggiore dell ultima offerta piu rialzomin");
         }
         finally {
             try{

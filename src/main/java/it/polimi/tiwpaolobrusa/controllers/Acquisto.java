@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -67,10 +69,13 @@ public class Acquisto extends HttpServlet {
             request.getSession().removeAttribute("errorMessage");
             request.setAttribute("errorMessage", errorMessage);
         }
-        List<Asta> aste;
+        List<Asta> aste = new ArrayList<>();
         AstaDAO aDao = new AstaDAO(con);
         String keyWord = request.getParameter("search");
         if (keyWord != null) {
+            keyWord = keyWord.replace("\\", "\\\\")
+                    .replace("%", "\\%")
+                    .replace("_", "\\_");
             try {
                 aste = aDao.getAstaByKeyword(keyWord, request.getSession().getAttribute("user").toString());
                 TimeLeft.timeLeft(aste);
@@ -82,8 +87,8 @@ public class Acquisto extends HttpServlet {
             if (aste.isEmpty()) {
                 request.setAttribute("errorMessage", "Non trovato");
             }
-            request.getSession().setAttribute("aste", aste);
         }
+        request.getSession().setAttribute("aste", aste);
         request.setAttribute("aggiud", aggiud);
         String path = "/WEB-INF/acquisto.jsp";
         dispatcher = request.getRequestDispatcher(path);
@@ -97,6 +102,7 @@ public class Acquisto extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Acquisto");
             return;
         }
+        keyWord = URLEncoder.encode(keyWord, StandardCharsets.UTF_8);
         response.sendRedirect(request.getContextPath() + "/Acquisto?search=" + keyWord);
     }
 }

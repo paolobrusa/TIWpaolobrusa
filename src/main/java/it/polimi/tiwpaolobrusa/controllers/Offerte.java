@@ -49,6 +49,11 @@ public class Offerte extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String errorMessage = (String) request.getSession().getAttribute("errorMessage");
+        if (errorMessage != null) {
+            request.getSession().removeAttribute("errorMessage");
+            request.setAttribute("errorMessage", errorMessage);
+        }
         String id = request.getParameter("idasta");
         if (id == null) {
             request.setAttribute("errorMessage", "Errore imprevisto, assicurati di aver selezionato un asta");
@@ -83,7 +88,7 @@ public class Offerte extends HttpServlet {
             return;
         }
         request.setAttribute("articoli", articoli);
-        request.setAttribute("offerta", offerta);
+        request.setAttribute("offerte", offerta);
         dispatcher.forward(request, response);
     }
 
@@ -102,15 +107,15 @@ public class Offerte extends HttpServlet {
         }
         catch(NumberFormatException e){
             request.getSession().setAttribute("errorMessage", "Formato numerico non valido");
-            response.sendRedirect(request.getContextPath() + "/Offerta");
+            response.sendRedirect(request.getContextPath() + "/Offerta?idasta=" + idasta);
             return;
         }
         OffertaDAO oDao = new OffertaDAO(con);
         try {
-            oDao.insertOfferta(request.getSession().getAttribute("user").toString(), idasta, offertaprezzo);
+            oDao.insertOfferta(request.getSession().getAttribute("user").toString(), offertaprezzo, idasta);
         } catch (SQLException e) {
-            request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
-            response.sendRedirect(request.getContextPath() + "/Offerta");
+            request.getSession().setAttribute("errorMessage", e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Offerta?idasta=" + idasta);
             return;
         }
         response.sendRedirect(request.getContextPath() + "/Offerta?idasta=" + idasta);
