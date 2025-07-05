@@ -5,7 +5,7 @@ import java.util.Date;
 public class Offerta {
     private String usnUser;
     private int bid;
-    private Asta asta;
+    private int idAsta;
     private Date date;
 
     public Offerta(String usnUser, int bid, Date date) {
@@ -30,11 +30,15 @@ public class Offerta {
         this.bid = bid;
     }
 
-    public Asta getAsta() {
-        return asta;
-    }
-
     public Date getDate() {return date;}
 
     public void setDate(Date date) {this.date = date;}
+
+    public int getIdAsta() {
+        return idAsta;
+    }
+
+    public void setIdAsta(int idAsta) {
+        this.idAsta = idAsta;
+    }
 }

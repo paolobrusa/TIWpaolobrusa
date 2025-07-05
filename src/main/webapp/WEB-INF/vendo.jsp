@@ -20,9 +20,8 @@
     </div>
 
     <%
-        String errorMessage = (String) request.getSession().getAttribute("errorMessage");
+        String errorMessage = (String) request.getAttribute("errorMessage");
         if (errorMessage != null) {
-            request.getSession().removeAttribute("errorMessage");
     %>
     <div class="error-message">
         <%= errorMessage %>
@@ -82,7 +81,7 @@
                                             ${asta.timeLeft}
                                     </td>
                                     <td class="actions">
-                                        <c:url value="Dettaglio" var="regURL">
+                                        <c:url value="/Dettaglio" var="regURL">
                                             <c:param name="idasta" value="${asta.id}" />
                                         </c:url>
                                         <a href="${regURL}" class="btn-dettaglio btn-active">
@@ -154,7 +153,7 @@
                                         <fmt:formatDate value="${asta.date}" pattern="dd/MM/yyyy HH:mm"/>
                                     </td>
                                     <td class="actions">
-                                        <c:url value="Dettaglio" var="regURL">
+                                        <c:url value="/Dettaglio" var="regURL">
                                             <c:param name="idasta" value="${asta.id}" />
                                         </c:url>
                                         <a href="${regURL}" class="btn-dettaglio btn-closed">

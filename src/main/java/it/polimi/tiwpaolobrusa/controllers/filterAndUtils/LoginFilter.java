@@ -12,7 +12,8 @@ import java.util.Arrays;
 public class LoginFilter implements Filter {
 
     private static final String[] paths = {"/Homepage", "/Vendo", "/css/aste.css",
-            "/css/homepage.css", "/Logout", "/Dettaglio", "/css/dettaglioasta.css", "/AddArticolo", "/CreateAsta"};
+            "/css/homepage.css", "/Logout", "/Dettaglio", "/css/dettaglioasta.css", "/AddArticolo",
+            "/CreateAsta", "/Acquisto", "/css/acquisto.css"};
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

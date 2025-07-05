@@ -60,7 +60,7 @@ public class ArticoloDAO {
         }
         finally{
             try {
-                ps.close();
+                if(ps != null) ps.close();
             } catch (SQLException e) {
                 throw new SQLException("Close ps failed");
             }
@@ -97,5 +97,38 @@ public class ArticoloDAO {
                 throw new SQLException(e);
             }
         }
+    }
+
+    public List<Articolo> getArticoliByAsta(int idAsta) throws SQLException {
+        List<Articolo> articoli = new ArrayList<>();
+        String query = "SELECT codice, nome, descrizione, immaginepath, prezzo FROM articolo JOIN articolilista ON codice = codarticolo WHERE idasta = ?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try{
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, idAsta);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                Articolo a = new Articolo(rs.getInt("codice"), rs.getString("name"), rs.getString("descrizione"), rs.getString("immaginepath"), rs.getInt("prezzo") );
+                articoli.add(a);
+            }
+        }
+        catch (SQLException e) {
+            throw new SQLException("Cant get articoli");
+        }
+        finally{
+            try {
+                if(ps != null) ps.close();
+            } catch (SQLException e) {
+                throw new SQLException("Close ps failed");
+            }
+            try{
+                if(rs != null) rs.close();
+            }
+            catch (SQLException e){
+                throw new SQLException("Close rs failed");
+            }
+        }
+        return articoli;
     }
 }

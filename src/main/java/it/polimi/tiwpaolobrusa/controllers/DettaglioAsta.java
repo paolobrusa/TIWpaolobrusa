@@ -54,14 +54,28 @@ public class DettaglioAsta extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String errorMessage = (String) request.getSession().getAttribute("errorMessage");
+        if (errorMessage != null) {
+            request.getSession().removeAttribute("errorMessage");
+            request.setAttribute("errorMessage", errorMessage);
+        }
         String id = request.getParameter("idasta");
-        if (id == null) return;
+        if (id == null) {
+            request.setAttribute("errorMessage", "Errore imprevisto, assicurati di aver selezionato un asta");
+            String path = "WEB-INF/dettaglioAsta.jsp";
+            dispatcher = request.getRequestDispatcher(path);
+            dispatcher.forward(request, response);
+            return;
+        }
         int idasta = 0;
         try{
             idasta = Integer.parseInt(id);
         }
         catch(NumberFormatException e){
-            response.sendRedirect(request.getContextPath() + "/Vendo");
+            request.setAttribute("errorMessage", e.getMessage());
+            String path = "WEB-INF/dettaglioAsta.jsp";
+            dispatcher = request.getRequestDispatcher(path);
+            dispatcher.forward(request, response);
             return;
         }
         AstaDAO aDao = new AstaDAO(con);
@@ -130,20 +144,16 @@ public class DettaglioAsta extends HttpServlet {
             idasta = Integer.parseInt(idAsta);
         }
         catch(NumberFormatException e){
-            request.setAttribute("errorMessage", "Formato id non valido");
-            String path = "WEB-INF/dettaglioAsta.jsp";
-            dispatcher = request.getRequestDispatcher(path);
-            dispatcher.forward(request, response);
+            request.getSession().setAttribute("errorMessage", "Formato id non valido");
+            response.sendRedirect(request.getContextPath() + "/Dettaglio");
             return;
         }
         AstaDAO astaDAO = new AstaDAO(con);
         try {
             astaDAO.closeState(idasta);
         } catch (SQLException e) {
-            request.setAttribute("errorMessage", e.getMessage());
-            String path = "WEB-INF/dettaglioAsta.jsp";
-            dispatcher = request.getRequestDispatcher(path);
-            dispatcher.forward(request, response);
+            request.getSession().setAttribute("errorMessage", e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Dettaglio");
             return;
         }
         response.sendRedirect(request.getContextPath() + "/Dettaglio?idasta=" + idasta);

@@ -103,11 +103,10 @@ public class AstaDAO {
             ps.setObject(3, Timestamp.valueOf(date));
             ps.executeUpdate();
             rs = ps.getGeneratedKeys();
-            if (!rs.next()) {
-                throw new RuntimeException();
-                //throw new SQLException("Can't add Asta");
+            if (rs.next()) {
+                idAsta = rs.getInt(1);
             }
-            idAsta = rs.getInt(1);
+            else throw new SQLException("Can't add Asta");
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -174,5 +173,41 @@ public class AstaDAO {
                 throw new SQLException("Error closing statement");
             }
         }
+    }
+
+    public List<Asta> getAstaByKeyword(String keyword, String user) throws SQLException {
+        List<Asta> aste = new ArrayList<>();
+        String query = "SELECT DISTINCT id, prezzoiniziale, rialzomin, scadenza FROM Asta JOIN articolilista ON id = idasta JOIN articolo ON codarticolo = codice WHERE proprietario <> ? AND scadenza > NOW() AND stato = 'attiva' AND (nome LIKE ? OR descrizione LIKE ?) ORDER BY scadenza DESC";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String key = "%"+keyword+"%";
+        try{
+            ps = connection.prepareStatement(query);
+            ps.setString(1, user);
+            ps.setString(2, key);
+            ps.setString(3, key);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Asta a = new Asta(rs.getInt("id"), rs.getInt("prezzoiniziale"), rs.getInt("rialzomin"), rs.getDate("scadenza"), State.attiva);
+                aste.add(a);
+            }
+        }
+        catch (SQLException e) {
+            throw new SQLException("Can't get Asta");
+        }
+        finally {
+            try {
+                if(ps != null) ps.close();
+            } catch (SQLException e) {
+                throw new SQLException("Error closing statement");
+            }
+            try{
+                if(rs != null) rs.close();
+            }
+            catch (SQLException e){
+                throw new SQLException("Error closing rs");
+            }
+        }
+        return aste;
     }
 }

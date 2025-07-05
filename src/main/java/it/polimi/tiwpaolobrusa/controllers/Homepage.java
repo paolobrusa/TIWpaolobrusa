@@ -49,6 +49,10 @@ public class Homepage extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect(request.getContextPath() + "/Homepage");
+    }
+
     public void destroy() {
         if (con != null) {
             try {

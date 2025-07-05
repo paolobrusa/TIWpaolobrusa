@@ -39,7 +39,7 @@
             </div>
             <h2>Acquista</h2>
             <p>Trova qualcosa che ti interessa</p>
-            <a href="${pageContext.request.contextPath}/Vendo" class="btn-option">Vai ad Acquisto</a>
+            <a href="${pageContext.request.contextPath}/Acquisto" class="btn-option">Vai ad Acquisto</a>
         </div>
     </div>
     <div class="logout-container">
