@@ -76,6 +76,39 @@
                 </div>
             </div>
 
+            <div class="asta-articles">
+                <h3>Articoli dell'Asta</h3>
+                <c:choose>
+                    <c:when test="${not empty articoli}">
+                        <div class="articles-table-container">
+                            <table class="articles-table">
+                                <thead>
+                                <tr>
+                                    <th>Codice</th>
+                                    <th>Nome</th>
+                                    <th>Prezzo</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="articolo" items="${articoli}">
+                                    <tr class="article-row">
+                                        <td class="article-code">${articolo.code}</td>
+                                        <td class="article-name">${articolo.name}</td>
+                                        <td class="article-price">€ <fmt:formatNumber value="${articolo.price}"/></td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="no-articles-message">
+                            <h4>Nessun articolo presente</h4>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+
             <c:if test="${asta.state == 'attiva'}">
                 <div class="asta-actions">
                     <form method="post">

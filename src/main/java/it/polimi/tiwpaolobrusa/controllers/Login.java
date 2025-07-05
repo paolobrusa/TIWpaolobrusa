@@ -63,7 +63,7 @@ public class Login extends HttpServlet {
             user = uDAO.getUtente(request.getParameter("username"), request.getParameter("password"));
         } catch (SQLException e) {
             request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
-            response.sendRedirect(request.getContextPath() + "/Login"); //pensa se mettere redirect oppure forward
+            response.sendRedirect(request.getContextPath() + "/Login");
             return;
         }
         HttpSession session = request.getSession(true);

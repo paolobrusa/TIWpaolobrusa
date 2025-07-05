@@ -77,14 +77,13 @@ public class Vendo extends HttpServlet {
             dispatcher.forward(request, response);
         }
         catch (Exception e){
-            e.printStackTrace(); //QUA MAGARI MANDA ALLA HOMEPAGE CON ERRORE
+            response.sendRedirect(request.getContextPath() + "/Homepage"); //QUA MAGARI MANDA ALLA HOMEPAGE CON ERRORE
         }
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.sendRedirect(request.getContextPath() + "/Vendo");
     }
-    //TODO L’elenco riporta: codice e nome degli articoli compresi nell’asta (FALLO NEL DETTAGLIO)
 
     public void destroy() {
         if (con != null) {

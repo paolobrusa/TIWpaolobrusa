@@ -89,6 +89,8 @@ public class Offerte extends HttpServlet {
         }
         request.setAttribute("articoli", articoli);
         request.setAttribute("offerte", offerta);
+        String path = "WEB-INF/offerta.jsp";
+        dispatcher = request.getRequestDispatcher(path);
         dispatcher.forward(request, response);
     }
 

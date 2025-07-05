@@ -1,9 +1,7 @@
 package it.polimi.tiwpaolobrusa.controllers;
 
-import it.polimi.tiwpaolobrusa.beans.Asta;
-import it.polimi.tiwpaolobrusa.beans.Offerta;
-import it.polimi.tiwpaolobrusa.beans.State;
-import it.polimi.tiwpaolobrusa.beans.Utente;
+import it.polimi.tiwpaolobrusa.beans.*;
+import it.polimi.tiwpaolobrusa.dao.ArticoloDAO;
 import it.polimi.tiwpaolobrusa.dao.AstaDAO;
 import it.polimi.tiwpaolobrusa.dao.OffertaDAO;
 import it.polimi.tiwpaolobrusa.dao.UtenteDAO;
@@ -80,11 +78,14 @@ public class DettaglioAsta extends HttpServlet {
         }
         AstaDAO aDao = new AstaDAO(con);
         OffertaDAO oDao = new OffertaDAO(con);
+        ArticoloDAO arDao = new ArticoloDAO(con);
         Asta asta;
         List<Offerta> o;
+        List<Articolo> a;
         try {
             asta = aDao.getState(idasta, request.getSession().getAttribute("user").toString());
             o = oDao.getOfferta(idasta);
+            a = arDao.getArticoliByAsta(idasta);
         } catch (SQLException e) {
             request.setAttribute("errorMessage", e.getMessage());
             String path = "WEB-INF/dettaglioAsta.jsp";
@@ -96,6 +97,7 @@ public class DettaglioAsta extends HttpServlet {
             String path = "WEB-INF/dettaglioAsta.jsp";
             request.setAttribute("asta", asta);
             request.setAttribute("offerte", o);
+            request.setAttribute("articoli", a);
             dispatcher = request.getRequestDispatcher(path);
             dispatcher.forward(request, response);
         }
@@ -105,6 +107,7 @@ public class DettaglioAsta extends HttpServlet {
             winner = o.stream().max(Comparator.comparing(Offerta::getBid)).orElse(null);
             request.setAttribute("asta", asta);
             request.setAttribute("offerte", o);
+            request.setAttribute("articoli", a);
             Utente u = null;
             if (winner != null) {
                 try {
