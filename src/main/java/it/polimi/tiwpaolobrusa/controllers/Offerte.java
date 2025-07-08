@@ -87,6 +87,9 @@ public class Offerte extends HttpServlet {
             dispatcher.forward(request, response);
             return;
         }
+        if(articoli.isEmpty()){
+            request.setAttribute("errorMessage", "Errore caricamento articoli, assicurati di aver selezionato un asta");
+        }
         request.setAttribute("articoli", articoli);
         request.setAttribute("offerte", offerta);
         String path = "WEB-INF/offerta.jsp";
