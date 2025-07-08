@@ -7,15 +7,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACQUISTO</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/acquisto.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
 <div class="aste-container">
     <!-- Header -->
-    <header class="aste-header">
+    <div class="aste-header">
         <h1>Acquisto</h1>
         <p>Cerca articoli che ti interessano</p>
-    </header>
+    </div>
+
     <c:if test="${not empty errorMessage}">
         <div class="error-message">
                 ${errorMessage}
@@ -26,12 +27,10 @@
     <div class="search-section">
         <form method="POST" class="search-form">
             <div class="search-container">
-                <label>
-                    <input type="text"
-                           name="keyWord"
-                           placeholder="Cerca nelle aste..."
-                           class="search-input">
-                </label>
+                <input type="text"
+                       name="keyWord"
+                       placeholder="Cerca nelle aste..."
+                       class="search-input">
                 <button type="submit" class="search-button">
                     Cerca
                 </button>
@@ -44,7 +43,7 @@
         <!-- Sezione Aste -->
         <div class="section-container">
             <div class="section-header">
-                <h2 class="section-title aste-title">Aste Ricercate</h2>
+                <h2 class="section-title auction-title">Aste Ricercate</h2>
                 <span class="section-count">${not empty aste ? aste.size() : 0} aste</span>
             </div>
 
@@ -71,13 +70,13 @@
                                     <fmt:formatNumber value="${asta.minBid}" type="currency" currencySymbol="€" />
                                 </td>
                                 <td class="date">
-                                    ${asta.timeLeft}
+                                        ${asta.timeLeft}
                                 </td>
                                 <td class="actions">
                                     <c:url value="/Offerta" var="regURL">
                                         <c:param name="idasta" value="${asta.id}" />
                                     </c:url>
-                                    <a href="${regURL}" class="btn-dettaglio btn-active">
+                                    <a href="${regURL}" class="btn-dettaglio">
                                         Dettagli
                                     </a>
                                 </td>
@@ -97,7 +96,7 @@
         <!-- Sezione Aggiudicazioni -->
         <div class="section-container">
             <div class="section-header">
-                <h2 class="section-title aggiud-title">Aggiudicazioni</h2>
+                <h2 class="section-title closed-title">Aggiudicazioni</h2>
                 <span class="section-count">${not empty aggiud ? aggiud.size() : 0} aggiudicazioni</span>
             </div>
 
@@ -118,7 +117,7 @@
                                 <td class="asta-id">
                                     <fmt:formatNumber value="${aggiudicazione.idAsta}" />
                                 </td>
-                                <td class="bid-amount">
+                                <td class="min-bid">
                                     <fmt:formatNumber value="${aggiudicazione.bid}" type="currency" currencySymbol="€" />
                                 </td>
                                 <td class="date">
@@ -146,6 +145,7 @@
             </c:choose>
         </div>
     </div>
+
     <div class="homepage-button-container">
         <a href="${pageContext.request.contextPath}/Homepage" class="btn-homepage">
             Torna alla Homepage

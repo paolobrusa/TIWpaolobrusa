@@ -10,7 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VENDO</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/aste.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
 <div class="aste-container">
@@ -69,7 +69,7 @@
                         <tbody>
                         <c:forEach var="asta" items="${aste}">
                             <c:if test="${asta.state == 'attiva'}">
-                                <tr class="asta-row active-row">
+                                <tr class="asta-row">
                                     <td class="asta-id">#${asta.id}</td>
                                     <td class="price">
                                         <fmt:formatNumber value="${asta.initialPrice}" type="currency" currencySymbol="€"/>
@@ -84,7 +84,7 @@
                                         <c:url value="/Dettaglio" var="regURL">
                                             <c:param name="idasta" value="${asta.id}" />
                                         </c:url>
-                                        <a href="${regURL}" class="btn-dettaglio btn-active">
+                                        <a href="${regURL}" class="btn-dettaglio">
                                             Gestisci
                                         </a>
                                     </td>
@@ -141,7 +141,7 @@
                         <tbody>
                         <c:forEach var="asta" items="${aste}">
                             <c:if test="${asta.state == 'chiusa'}">
-                                <tr class="asta-row closed-row">
+                                <tr class="asta-row">
                                     <td class="asta-id">#${asta.id}</td>
                                     <td class="price">
                                         <fmt:formatNumber value="${asta.initialPrice}" type="currency" currencySymbol="€"/>
@@ -156,7 +156,7 @@
                                         <c:url value="/Dettaglio" var="regURL">
                                             <c:param name="idasta" value="${asta.id}" />
                                         </c:url>
-                                        <a href="${regURL}" class="btn-dettaglio btn-closed">
+                                        <a href="${regURL}" class="btn-dettaglio">
                                             Risultati
                                         </a>
                                     </td>
@@ -207,7 +207,7 @@
                     <input type="number" id="prezzo" name="prezzo" class="form-input" step="1" min="1" required placeholder="0">
                 </div>
 
-                <button type="submit" class="btn-submit btn-article">
+                <button type="submit" class="btn-submit">
                     Crea Articolo
                 </button>
             </form>
@@ -254,7 +254,7 @@
                     <input type="datetime-local" id="dataScadenza" name="date" class="form-input" required step="1">
                 </div>
 
-                <button type="submit" class="btn-submit btn-auction" ${empty articoli ? 'disabled' : ''}>
+                <button type="submit" class="btn-submit" ${empty articoli ? 'disabled' : ''}>
                     Crea Asta
                 </button>
             </form>
@@ -267,18 +267,6 @@
             Torna alla Homepage
         </a>
     </div>
-
-<%--    <c:if test="${empty aste}">--%>
-<%--        <div class="no-aste-message main-message">--%>
-<%--            <div class="no-aste-icon">📭</div>--%>
-<%--            <h2>Non ci sono aste</h2>--%>
-<%--            <p>Non hai ancora creato nessuna asta</p>--%>
-<%--            <a href="crea-asta.jsp" class="btn-create-auction">--%>
-<%--                Crea la tua prima asta--%>
-<%--                <span class="btn-arrow">+</span>--%>
-<%--            </a>--%>
-<%--        </div>--%>
-<%--    </c:if>--%>
 </div>
 </body>
 </html>

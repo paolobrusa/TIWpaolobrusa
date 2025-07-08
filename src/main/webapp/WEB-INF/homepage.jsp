@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOMEPAGE</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/homepage.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
 <div class="homepage-container">
@@ -42,6 +42,7 @@
             <a href="${pageContext.request.contextPath}/Acquisto" class="btn-option">Vai ad Acquisto</a>
         </div>
     </div>
+
     <div class="logout-container">
         <a href="${pageContext.request.contextPath}/Logout" class="btn-logout">LogOut</a>
     </div>
