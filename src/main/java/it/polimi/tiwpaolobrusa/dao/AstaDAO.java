@@ -5,9 +5,7 @@ import it.polimi.tiwpaolobrusa.beans.State;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class AstaDAO {
@@ -17,7 +15,41 @@ public class AstaDAO {
         this.connection = connection;
     }
 
-    public Asta getState(int id, String user) throws SQLException {
+    public State getState(int id) throws SQLException {
+        String query = "SELECT stato FROM Asta WHERE id = ?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        State s = null;
+        try{
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                s = State.valueOf(rs.getString("stato"));
+            }
+            else{
+                throw new SQLException("Asta not found");
+            }
+        }
+        catch(SQLException e){
+            throw new SQLException("Asta not exist");
+        }
+        finally {
+            try{
+                if(rs != null) rs.close();
+            }catch (SQLException e){
+                throw new SQLException("Error closing resultSet");
+            }
+            try{
+                if(ps != null) ps.close();
+            }catch (SQLException e){
+                throw new SQLException("Error closing statement");
+            }
+        }
+        return s;
+    }
+
+    public Asta getAsta(int id, String user) throws SQLException {
         String query = "SELECT DISTINCT id, prezzoiniziale, rialzomin, scadenza, stato FROM Asta JOIN articolilista ON id = idasta JOIN articolo ON codarticolo = codice WHERE id = ? AND proprietario = ?";
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -154,7 +186,7 @@ public class AstaDAO {
     }
 
     public void closeState(int idAsta) throws SQLException {
-        String query = "UPDATE Asta SET stato = ? WHERE id = ?";
+        String query = "UPDATE Asta SET stato = ? WHERE id = ?"; //TODO qua va aggiunto controllo su user
         PreparedStatement ps = null;
         try{
             ps = connection.prepareStatement(query);

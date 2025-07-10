@@ -6,7 +6,6 @@ import it.polimi.tiwpaolobrusa.dao.AstaDAO;
 import it.polimi.tiwpaolobrusa.dao.OffertaDAO;
 import it.polimi.tiwpaolobrusa.dao.UtenteDAO;
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,7 +17,6 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -83,7 +81,7 @@ public class DettaglioAsta extends HttpServlet {
         List<Offerta> o;
         List<Articolo> a;
         try {
-            asta = aDao.getState(idasta, request.getSession().getAttribute("user").toString());
+            asta = aDao.getAsta(idasta, request.getSession().getAttribute("user").toString());
             o = oDao.getOfferta(idasta);
             a = arDao.getArticoliByAsta(idasta);
         } catch (SQLException e) {

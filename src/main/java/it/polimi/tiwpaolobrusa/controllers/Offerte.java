@@ -3,7 +3,9 @@ package it.polimi.tiwpaolobrusa.controllers;
 import it.polimi.tiwpaolobrusa.beans.Articolo;
 import it.polimi.tiwpaolobrusa.beans.Offerta;
 import it.polimi.tiwpaolobrusa.dao.ArticoloDAO;
+import it.polimi.tiwpaolobrusa.dao.AstaDAO;
 import it.polimi.tiwpaolobrusa.dao.OffertaDAO;
+import it.polimi.tiwpaolobrusa.beans.State;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -17,6 +19,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @WebServlet("/Offerta")
@@ -73,11 +76,14 @@ public class Offerte extends HttpServlet {
             dispatcher.forward(request, response);
             return;
         }
+        AstaDAO astaDAO = new AstaDAO(con);
         ArticoloDAO articoloDAO = new ArticoloDAO(con);
         OffertaDAO offertaDAO = new OffertaDAO(con);
         List<Articolo> articoli;
         List<Offerta> offerta;
+        State s = null;
         try {
+            s = astaDAO.getState(idasta);
             articoli = articoloDAO.getArticoliByAsta(idasta);
             offerta = offertaDAO.getOfferta(idasta);
         } catch (SQLException e) {
@@ -90,6 +96,16 @@ public class Offerte extends HttpServlet {
         if(articoli.isEmpty()){
             request.setAttribute("errorMessage", "Errore caricamento articoli, assicurati di aver selezionato un asta");
         }
+        if(s == State.chiusa){
+            Offerta winner = null;
+            winner = offerta.stream().max(Comparator.comparing(Offerta::getBid)).orElse(null);
+            String user = (String) request.getSession().getAttribute("user");
+            if(winner == null || !winner.getUsnUser().equals(user)){
+                request.setAttribute("errorMessage", "Asta chiusa non aggiudicata a te!");
+            }
+        }
+        System.out.println(s);
+        request.setAttribute("stato", s);
         request.setAttribute("articoli", articoli);
         request.setAttribute("offerte", offerta);
         String path = "WEB-INF/offerta.jsp";

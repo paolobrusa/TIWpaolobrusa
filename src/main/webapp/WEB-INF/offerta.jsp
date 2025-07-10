@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Articoli e Offerte</title>
+    <title>OFFERTE</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
@@ -19,7 +19,7 @@
     <!-- Messaggio di errore se presente -->
     <c:if test="${not empty errorMessage}">
         <div class="error-message">
-            <c:out value="${errorMessage}" />
+            <c:out value="${errorMessage}"/>
         </div>
     </c:if>
 
@@ -48,19 +48,19 @@
                             <c:forEach var="articolo" items="${articoli}">
                                 <tr class="asta-row">
                                     <td class="asta-id">
-                                        <c:out value="${articolo.code}" />
+                                        <c:out value="${articolo.code}"/>
                                     </td>
                                     <td class="article-name">
-                                        <c:out value="${articolo.name}" />
+                                        <c:out value="${articolo.name}"/>
                                     </td>
                                     <td class="article-description">
-                                        <c:out value="${articolo.description}" />
+                                        <c:out value="${articolo.description}"/>
                                     </td>
                                     <td class="article-path">
-                                        <c:out value="${articolo.path}" />
+                                        <c:out value="${articolo.path}"/>
                                     </td>
                                     <td class="price">
-                                        <fmt:formatNumber value="${articolo.price}" type="currency" currencyCode="EUR" />
+                                        <fmt:formatNumber value="${articolo.price}" type="currency" currencyCode="EUR"/>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -98,13 +98,13 @@
                             <c:forEach var="offerta" items="${offerte}">
                                 <tr class="asta-row">
                                     <td class="user-name">
-                                        <c:out value="${offerta.usnUser}" />
+                                        <c:out value="${offerta.usnUser}"/>
                                     </td>
                                     <td class="min-bid">
-                                        <fmt:formatNumber value="${offerta.bid}" type="currency" currencyCode="EUR" />
+                                        <fmt:formatNumber value="${offerta.bid}" type="currency" currencyCode="EUR"/>
                                     </td>
                                     <td class="date">
-                                        <fmt:formatDate value="${offerta.date}" pattern="dd/MM/yyyy HH:mm" />
+                                        <fmt:formatDate value="${offerta.date}" pattern="dd/MM/yyyy HH:mm"/>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -123,32 +123,34 @@
         </div>
 
         <!-- Form per nuova offerta -->
-        <div class="forms-container">
-            <div class="form-container">
-                <div class="form-header">
-                    <h2 class="form-title auction-title">Offerta</h2>
-                    <p class="form-subtitle">Inserisci la tua offerta</p>
-                </div>
-
-                <form method="post" class="form-content">
-                    <div class="input-group">
-                        <label for="offertaprezzo" class="input-label">Importo Offerta (€)</label>
-                        <input type="number"
-                               name="offertaprezzo"
-                               id="offertaprezzo"
-                               class="form-input"
-                               placeholder="0"
-                               step="1"
-                               min="1"
-                               required>
+        <c:if test="${stato == 'attiva'}">
+            <div class="forms-container">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2 class="form-title auction-title">Offerta</h2>
+                        <p class="form-subtitle">Inserisci la tua offerta</p>
                     </div>
-                    <input type="hidden" name="idAsta" value="${asta.id}">
-                    <button type="submit" class="btn-submit">
-                        Invia Offerta
-                    </button>
-                </form>
+
+                    <form method="post" class="form-content">
+                        <div class="input-group">
+                            <label for="offertaprezzo" class="input-label">Importo Offerta (€)</label>
+                            <input type="number"
+                                   name="offertaprezzo"
+                                   id="offertaprezzo"
+                                   class="form-input"
+                                   placeholder="0"
+                                   step="1"
+                                   min="1"
+                                   required>
+                        </div>
+                        <input type="hidden" name="idAsta" value="${asta.id}">
+                        <button type="submit" class="btn-submit">
+                            Invia Offerta
+                        </button>
+                    </form>
+                </div>
             </div>
-        </div>
+        </c:if>
     </c:if>
 
     <!-- Bottone Homepage -->
