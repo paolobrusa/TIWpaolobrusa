@@ -139,9 +139,10 @@ public class DettaglioAsta extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Dettaglio");
             return;
         }
+        String user = (String) request.getSession().getAttribute("user");
         AstaDAO astaDAO = new AstaDAO(con);
         try {
-            astaDAO.closeState(idasta);
+            astaDAO.closeState(idasta, user);
         } catch (SQLException e) {
             request.getSession().setAttribute("errorMessage", e.getMessage());
             response.sendRedirect(request.getContextPath() + "/Dettaglio");

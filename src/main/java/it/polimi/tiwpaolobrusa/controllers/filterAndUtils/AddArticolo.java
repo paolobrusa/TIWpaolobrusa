@@ -58,9 +58,23 @@ public class AddArticolo extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Vendo");
             return;
         }
+        int prezzo;
+        try{
+            prezzo = Integer.parseInt(p);
+        }
+        catch (NumberFormatException e){
+            request.getSession().setAttribute("errorMessage", "Formato non valido");
+            response.sendRedirect(request.getContextPath() + "/Vendo");
+            return;
+        }
+        if(prezzo <= 0){
+            request.getSession().setAttribute("errorMessage", "Prezzo non puo essere negativo");
+            response.sendRedirect(request.getContextPath() + "/Vendo");
+            return;
+        }
         ArticoloDAO aDAO = new ArticoloDAO(con);
         try {
-            aDAO.addArticolo(n, d, o, path, Integer.parseInt(p));
+            aDAO.addArticolo(n, d, o, path, prezzo);
         } catch (SQLException e) {
             request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
             response.sendRedirect(request.getContextPath() + "/Vendo");

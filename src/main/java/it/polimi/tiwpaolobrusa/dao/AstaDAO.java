@@ -15,21 +15,22 @@ public class AstaDAO {
         this.connection = connection;
     }
 
-    public State getState(int id) throws SQLException {
-        String query = "SELECT stato FROM Asta WHERE id = ?";
+    public State getState(int id, String user) throws SQLException {
+        String query = "SELECT stato FROM Asta WHERE id = ? AND EXISTS (SELECT 1 FROM articolilista JOIN articolo ON codarticolo = codice WHERE proprietario <> ? AND idasta = id)";
         PreparedStatement ps = null;
         ResultSet rs = null;
         State s = null;
         try{
             ps = connection.prepareStatement(query);
             ps.setInt(1, id);
+            ps.setString(2, user);
             rs = ps.executeQuery();
             if(rs.next()){
                 s = State.valueOf(rs.getString("stato"));
             }
-            else{
-                throw new SQLException("Asta not found");
-            }
+//            else{
+//                throw new SQLException("Asta not found");
+//            }
         }
         catch(SQLException e){
             throw new SQLException("Asta not exist");
@@ -173,7 +174,7 @@ public class AstaDAO {
             ps.executeBatch();
         }
         catch (SQLException e) {
-            throw new SQLException("Can't add Articoli"); //QUI MANCA RIMOZIONE ULTIMA ASTA DATO CHE SE FALLISCE L'ASTA NON DEVE ESISTERE
+            throw new SQLException("Can't add Articoli");
         }
         finally {
             try{
@@ -185,13 +186,14 @@ public class AstaDAO {
         }
     }
 
-    public void closeState(int idAsta) throws SQLException {
-        String query = "UPDATE Asta SET stato = ? WHERE id = ?"; //TODO qua va aggiunto controllo su user
+    public void closeState(int idAsta, String user) throws SQLException {
+        String query = "UPDATE Asta SET stato = ? WHERE id = ? AND EXISTS (SELECT 1 FROM articolilista JOIN articolo ON codarticolo = codice WHERE proprietario = ? AND idasta = id)";
         PreparedStatement ps = null;
         try{
             ps = connection.prepareStatement(query);
             ps.setString(1, State.chiusa.toString());
             ps.setInt(2, idAsta);
+            ps.setString(3, user);
             ps.executeUpdate();
         }
         catch (SQLException e) {

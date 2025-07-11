@@ -70,7 +70,7 @@ public class Offerte extends HttpServlet {
             idasta = Integer.parseInt(id);
         }
         catch(NumberFormatException e){
-            request.setAttribute("errorMessage", e.getMessage());
+            request.setAttribute("errorMessage", "Formato numerico non valido");
             String path = "WEB-INF/offerta.jsp";
             dispatcher = request.getRequestDispatcher(path);
             dispatcher.forward(request, response);
@@ -82,8 +82,9 @@ public class Offerte extends HttpServlet {
         List<Articolo> articoli;
         List<Offerta> offerta;
         State s = null;
+        String user = request.getSession().getAttribute("user").toString();
         try {
-            s = astaDAO.getState(idasta);
+            s = astaDAO.getState(idasta, user);
             articoli = articoloDAO.getArticoliByAsta(idasta);
             offerta = offertaDAO.getOfferta(idasta);
         } catch (SQLException e) {
@@ -96,15 +97,15 @@ public class Offerte extends HttpServlet {
         if(articoli.isEmpty()){
             request.setAttribute("errorMessage", "Errore caricamento articoli, assicurati di aver selezionato un asta");
         }
+        if(s == null)
+            request.setAttribute("errorMessage", "Asta tua o non esistente");
         if(s == State.chiusa){
             Offerta winner = null;
             winner = offerta.stream().max(Comparator.comparing(Offerta::getBid)).orElse(null);
-            String user = (String) request.getSession().getAttribute("user");
             if(winner == null || !winner.getUsnUser().equals(user)){
                 request.setAttribute("errorMessage", "Asta chiusa non aggiudicata a te!");
             }
         }
-        System.out.println(s);
         request.setAttribute("stato", s);
         request.setAttribute("articoli", articoli);
         request.setAttribute("offerte", offerta);
@@ -128,6 +129,11 @@ public class Offerte extends HttpServlet {
         }
         catch(NumberFormatException e){
             request.getSession().setAttribute("errorMessage", "Formato numerico non valido");
+            response.sendRedirect(request.getContextPath() + "/Offerta?idasta=" + idasta);
+            return;
+        }
+        if(offertaprezzo <= 0){
+            request.getSession().setAttribute("errorMessage", "L'offerta deve essere positiva");
             response.sendRedirect(request.getContextPath() + "/Offerta?idasta=" + idasta);
             return;
         }
