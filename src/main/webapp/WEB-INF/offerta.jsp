@@ -40,7 +40,7 @@
                                 <th>Codice</th>
                                 <th>Nome</th>
                                 <th>Descrizione</th>
-                                <th>Percorso</th>
+                                <th>Immagine</th>
                                 <th>Prezzo</th>
                             </tr>
                             </thead>
@@ -57,7 +57,7 @@
                                         <c:out value="${articolo.description}"/>
                                     </td>
                                     <td class="article-path">
-                                        <c:out value="${articolo.path}"/>
+                                        <img src="${pageContext.request.contextPath}/Image/${articolo.path}" alt="${articolo.path}"/>
                                     </td>
                                     <td class="price">
                                         <fmt:formatNumber value="${articolo.price}" type="currency" currencyCode="EUR"/>

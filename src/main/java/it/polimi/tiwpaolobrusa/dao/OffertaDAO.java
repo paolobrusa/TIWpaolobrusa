@@ -48,7 +48,7 @@ public class OffertaDAO {
 
     public List<Offerta> getOfferteAggiudicate(String user) throws SQLException {
         List<Offerta> offerta = new ArrayList<Offerta>();
-        String query = "SELECT usnutente, offertaprezzo, dataora, idasta FROM Offerta JOIN asta ON idasta = id WHERE stato = 'chiusa' AND usnutente = ? ORDER BY offertaprezzo DESC, dataora DESC LIMIT 1";
+        String query = "SELECT usnutente, offertaprezzo, dataora, idasta FROM Offerta o JOIN asta ON idasta = id WHERE stato = 'chiusa' AND usnutente = ? AND o.offertaprezzo = (SELECT MAX(o2.offertaprezzo) FROM Offerta o2 WHERE o2.idasta = o.idasta) ORDER BY offertaprezzo DESC, dataora DESC";
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {

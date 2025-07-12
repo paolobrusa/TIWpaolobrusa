@@ -186,7 +186,7 @@
                 <p class="form-subtitle">Aggiungi un nuovo articolo</p>
             </div>
 
-            <form action="${pageContext.request.contextPath}/AddArticolo" method="post" class="form-content">
+            <form action="${pageContext.request.contextPath}/AddArticolo" method="post" enctype="multipart/form-data" class="form-content">
                 <div class="input-group">
                     <label for="nome" class="input-label">Nome Articolo</label>
                     <input type="text" id="nome" name="nome" class="form-input" required placeholder="Nome articolo">
@@ -198,8 +198,8 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="path" class="input-label">Path Immagine</label>
-                    <input type="text" id="path" name="path" class="form-input" placeholder="URL o percorso dell'immagine">
+                    <label for="immagine" class="input-label">Immagine</label>
+                    <input type="file" id="immagine" name="immagine" class="form-input" placeholder="Seleziona un immagine" accept="image/jpeg, image/png">
                 </div>
 
                 <div class="input-group">

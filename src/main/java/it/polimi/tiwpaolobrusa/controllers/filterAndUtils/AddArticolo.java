@@ -4,22 +4,28 @@ import it.polimi.tiwpaolobrusa.dao.ArticoloDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.UUID;
 
 @WebServlet ("/AddArticolo")
+@MultipartConfig
 public class AddArticolo extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection con = null;
+    private static final String dir = System.getProperty("user.home") + File.separator + "TIWImage";
 
     public AddArticolo() {
         super();
@@ -51,15 +57,14 @@ public class AddArticolo extends HttpServlet {
         String n = request.getParameter("nome");
         String d = request.getParameter("descrizione");
         String o = request.getSession().getAttribute("user").toString();
-        String path = request.getParameter("path");
         String p = request.getParameter("prezzo");
-        if (n == null || d == null || o == null || path == null || p == null) {
+        if (n == null || d == null || o == null || p == null) {
             request.getSession().setAttribute("errorMessage", "Parametri non validi");
             response.sendRedirect(request.getContextPath() + "/Vendo");
             return;
         }
         int prezzo;
-        try{
+        try {
             prezzo = Integer.parseInt(p);
         }
         catch (NumberFormatException e){
@@ -72,6 +77,24 @@ public class AddArticolo extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Vendo");
             return;
         }
+        Part image = request.getPart("immagine");
+        if(image == null || (!image.getContentType().equals("image/jpeg") && !image.getContentType().equals("image/png"))){
+            request.getSession().setAttribute("errorMessage", "Immagine non valido");
+            response.sendRedirect(request.getContextPath() + "/Vendo");
+            return;
+        }
+        String path = UUID.randomUUID() + "." + image.getContentType().replace("image/", "");
+        File upload = new File(dir);
+        if (!upload.exists()) {
+            boolean a = upload.mkdir();
+            if (!a) {
+                request.getSession().setAttribute("errorMessage", "Errore creazione cartella");
+                response.sendRedirect(request.getContextPath() + "/Vendo");
+                return;
+            }
+        }
+        String filePath = dir + File.separator + path;
+        image.write(filePath);
         ArticoloDAO aDAO = new ArticoloDAO(con);
         try {
             aDAO.addArticolo(n, d, o, path, prezzo);

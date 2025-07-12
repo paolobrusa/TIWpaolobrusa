@@ -22,7 +22,7 @@ public class LoginFilter implements Filter {
         if ((path.equals("/Login") || path.equals("/css/style.css")) && request.getSession().getAttribute("user") == null) {
             filterChain.doFilter(request, response);
         }
-        else if (request.getSession().getAttribute("user") != null && request.getSession(false) != null && Arrays.asList(paths).contains(path)){
+        else if (request.getSession().getAttribute("user") != null && request.getSession(false) != null && (Arrays.asList(paths).contains(path) || path.startsWith("/Image/"))){
             filterChain.doFilter(request, response);
         }
         else if (request.getSession().getAttribute("user") != null && request.getSession(false) != null) {
