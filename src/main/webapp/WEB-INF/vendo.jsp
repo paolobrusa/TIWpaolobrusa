@@ -30,9 +30,8 @@
         }
     %>
 
-    <!-- Sezioni Aste Affiancate -->
     <div class="tables-container">
-        <!-- Sezione Aste Aperte -->
+        <!--aperte-->
         <div class="section-container">
             <div class="section-header">
                 <h2 class="section-title active-title">🟢 Aste Aperte</h2>
@@ -104,7 +103,7 @@
             </c:choose>
         </div>
 
-        <!-- Sezione Aste Chiuse -->
+        <!--chiuse-->
         <div class="section-container">
             <div class="section-header">
                 <h2 class="section-title closed-title">🔴 Aste Chiuse</h2>
@@ -177,9 +176,8 @@
         </div>
     </div>
 
-    <!-- Sezioni Form Affiancate -->
     <div class="forms-container">
-        <!-- Form Creazione Articolo -->
+        <!--form articolo-->
         <div class="form-container">
             <div class="form-header">
                 <h2 class="form-title article-title">Crea Articolo</h2>
@@ -213,7 +211,7 @@
             </form>
         </div>
 
-        <!-- Form Creazione Asta -->
+        <!--form asta-->
         <div class="form-container">
             <div class="form-header">
                 <h2 class="form-title auction-title">Crea Asta</h2>
@@ -261,7 +259,6 @@
         </div>
     </div>
 
-    <!-- Bottone per tornare alla homepage -->
     <div class="homepage-button-container">
         <a href="${pageContext.request.contextPath}/Homepage" class="btn-homepage">
             Torna alla Homepage

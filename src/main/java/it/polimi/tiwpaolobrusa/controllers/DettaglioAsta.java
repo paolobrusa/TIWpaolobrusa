@@ -111,7 +111,6 @@ public class DettaglioAsta extends HttpServlet {
                 try {
                     u = uDao.getWinner(winner.getUsnUser());
                 } catch (SQLException e) {
-                    e.printStackTrace();
                     request.setAttribute("errorMessage", "Non c'è l'aggiudicatario");
                     String path = "WEB-INF/dettaglioAsta.jsp";
                     dispatcher = request.getRequestDispatcher(path);
@@ -144,8 +143,8 @@ public class DettaglioAsta extends HttpServlet {
         try {
             astaDAO.closeState(idasta, user);
         } catch (SQLException e) {
-            request.getSession().setAttribute("errorMessage", e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/Dettaglio");
+            request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
+            response.sendRedirect(request.getContextPath() + "/Dettaglio?idasta=" + idasta);
             return;
         }
         response.sendRedirect(request.getContextPath() + "/Dettaglio?idasta=" + idasta);

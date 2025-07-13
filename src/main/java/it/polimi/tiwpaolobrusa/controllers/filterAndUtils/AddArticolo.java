@@ -63,6 +63,11 @@ public class AddArticolo extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Vendo");
             return;
         }
+        if(n.length() > 50 || d.length() > 255 || n.isEmpty() || d.isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Lunghezza attributi non valida, accorcia");
+            response.sendRedirect(request.getContextPath() + "/Vendo");
+            return;
+        }
         int prezzo;
         try {
             prezzo = Integer.parseInt(p);

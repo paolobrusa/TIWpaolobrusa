@@ -142,7 +142,6 @@ public class AstaDAO {
             else throw new SQLException("Can't add Asta");
         }
         catch (SQLException e) {
-            e.printStackTrace();
             throw new SQLException("Can't add Asta");
         }
         finally {
@@ -161,17 +160,20 @@ public class AstaDAO {
         return idAsta;
     }
 
-    public void addArticoliAsta(int idAsta, List<Integer> cods) throws SQLException {
-        String query = "INSERT into articolilista (idasta, codarticolo) values (?, ?)";
+    public void addArticoliAsta(int idAsta, List<Integer> cods, String user) throws SQLException {
+        String query = "INSERT into articolilista (idasta, codarticolo) SELECT ?, ? WHERE EXISTS (SELECT 1 FROM articolo WHERE proprietario = ? AND codice = ?) AND NOT EXISTS (SELECT 1 FROM articolilista WHERE idasta = ? AND codarticolo = ?)";
         PreparedStatement ps = null;
         try{
             ps = connection.prepareStatement(query);
             for (Integer codArt : cods) {
                 ps.setInt(1, idAsta);
                 ps.setInt(2, codArt);
-                ps.addBatch();
+                ps.setString(3, user);
+                ps.setInt(4, codArt);
+                ps.setInt(5, idAsta);
+                ps.setInt(6, codArt);
+                ps.executeUpdate();
             }
-            ps.executeBatch();
         }
         catch (SQLException e) {
             throw new SQLException("Can't add Articoli");
@@ -187,17 +189,19 @@ public class AstaDAO {
     }
 
     public void closeState(int idAsta, String user) throws SQLException {
-        String query = "UPDATE Asta SET stato = ? WHERE id = ? AND EXISTS (SELECT 1 FROM articolilista JOIN articolo ON codarticolo = codice WHERE proprietario = ? AND idasta = id)";
+        String query = "UPDATE Asta SET stato = ? WHERE id = ? AND EXISTS (SELECT 1 FROM articolilista JOIN articolo ON codarticolo = codice WHERE proprietario = ? AND idasta = id) AND scadenza<NOW()";
         PreparedStatement ps = null;
         try{
             ps = connection.prepareStatement(query);
             ps.setString(1, State.chiusa.toString());
             ps.setInt(2, idAsta);
             ps.setString(3, user);
-            ps.executeUpdate();
+            int i = ps.executeUpdate();
+            if(i == 0)
+                throw new SQLException("Non puoi chiudere l'asta");
         }
         catch (SQLException e) {
-            throw new SQLException("Can't close asta");
+            throw new SQLException(e);
         }
         finally {
             try{

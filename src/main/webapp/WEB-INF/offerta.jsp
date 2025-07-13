@@ -16,7 +16,6 @@
         <p>Fai la tua offerta</p>
     </div>
 
-    <!-- Messaggio di errore se presente -->
     <c:if test="${not empty errorMessage}">
         <div class="error-message">
             <c:out value="${errorMessage}"/>
@@ -25,7 +24,6 @@
 
     <c:if test="${empty errorMessage}">
         <div class="tables-container">
-            <!-- Sezione Articoli -->
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title article-title">Articoli Disponibili</h2>
@@ -57,7 +55,7 @@
                                         <c:out value="${articolo.description}"/>
                                     </td>
                                     <td class="article-path">
-                                        <img src="${pageContext.request.contextPath}/Image/${articolo.path}" alt="${articolo.path}"/>
+                                        <img src="${pageContext.request.contextPath}/Image/${articolo.path}" alt="Errore"/>
                                     </td>
                                     <td class="price">
                                         <fmt:formatNumber value="${articolo.price}" type="currency" currencyCode="EUR"/>
@@ -77,7 +75,6 @@
                 </c:choose>
             </div>
 
-            <!-- Sezione Offerte -->
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title auction-title">Offerte Ricevute</h2>
@@ -122,7 +119,7 @@
             </div>
         </div>
 
-        <!-- Form per nuova offerta -->
+        <!-- form offerta -->
         <c:if test="${stato == 'attiva'}">
             <div class="forms-container">
                 <div class="form-container">
@@ -153,7 +150,6 @@
         </c:if>
     </c:if>
 
-    <!-- Bottone Homepage -->
     <div class="homepage-button-container">
         <a href="${pageContext.request.contextPath}/Acquisto" class="btn-homepage">
             Torna ad Acquisto

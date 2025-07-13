@@ -56,6 +56,7 @@ public class CreateAsta extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] c = request.getParameterValues("codice");
+        String user = request.getSession().getAttribute("user").toString();
         if(c == null || c.length == 0){
             request.getSession().setAttribute("errorMessage", "Devi selezionare almeno 1 articolo");
             response.sendRedirect(request.getContextPath() + "/Vendo");
@@ -90,9 +91,9 @@ public class CreateAsta extends HttpServlet {
             return;
         }
         try {
-            aDao2.addArticoliAsta(idAsta, cods);
+            aDao2.addArticoliAsta(idAsta, cods, user);
         } catch (SQLException e) {
-            request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
+            request.getSession().setAttribute("errorMessage", e.getMessage());
             response.sendRedirect(request.getContextPath() + "/Vendo");
             return;
         }

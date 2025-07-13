@@ -28,7 +28,6 @@ public class OffertaDAO {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
             throw new SQLException("Cant't get offerta");
         }
         finally {
@@ -62,7 +61,6 @@ public class OffertaDAO {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
             throw new SQLException("Cant't get offerta");
         }
         finally {
@@ -81,14 +79,19 @@ public class OffertaDAO {
     }
 
     public void insertOfferta(String usnutente, int offertaprezzo, int idasta) throws SQLException {
-        String query = "INSERT into offerta (usnutente, offertaprezzo, idasta, dataora) values (?, ?, ?, NOW())";
+        String query = "INSERT into offerta (usnutente, offertaprezzo, idasta, dataora) SELECT ?, ?, ?, NOW() WHERE ? >= (SELECT COALESCE(MAX(o.offertaprezzo), a.prezzoiniziale) + a.rialzomin FROM asta a LEFT JOIN offerta o ON a.id = o.idasta WHERE a.id = ? AND a.stato = 'attiva')";
         PreparedStatement ps = null;
         try{
             ps = connection.prepareStatement(query);
             ps.setString(1, usnutente);
             ps.setInt(2, offertaprezzo);
             ps.setInt(3, idasta);
-            ps.executeUpdate();
+            ps.setInt(4, offertaprezzo);
+            ps.setInt(5, idasta);
+            int i = ps.executeUpdate();
+            if (i == 0) {
+                throw new SQLException();
+            }
         }
         catch (SQLException e) {
             throw new SQLException("L offerta deve essere maggiore dell ultima offerta piu rialzomin");

@@ -25,11 +25,9 @@ public class ImageHandler extends HttpServlet {
         String contentType = getServletContext().getMimeType(path.substring(1));
         File image = new File(dir, path.substring(1));
         if(!image.exists()){
-            //resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         if (contentType == null) {
-            //resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         Image image1 = ImageIO.read(image);
@@ -40,5 +38,9 @@ public class ImageHandler extends HttpServlet {
         imageb.getGraphics().drawImage(image1, 0, 0, null);
         resp.setContentType(contentType);
         ImageIO.write(imageb, path.substring(path.lastIndexOf('.')+1), resp.getOutputStream());
+    }
+
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
     }
 }

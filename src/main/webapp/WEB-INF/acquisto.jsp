@@ -11,7 +11,6 @@
 </head>
 <body>
 <div class="aste-container">
-    <!-- Header -->
     <div class="aste-header">
         <h1>Acquisto</h1>
         <p>Cerca articoli che ti interessano</p>
@@ -23,7 +22,7 @@
         </div>
     </c:if>
 
-    <!-- Sezione Ricerca -->
+    <!-- ricerca-->
     <div class="search-section">
         <form method="POST" class="search-form">
             <div class="search-container">
@@ -38,9 +37,8 @@
         </form>
     </div>
 
-    <!-- Container principale per le tabelle -->
     <div class="tables-container">
-        <!-- Sezione Aste -->
+        <!-- aste-->
         <div class="section-container">
             <div class="section-header">
                 <h2 class="section-title auction-title">Aste Ricercate</h2>
@@ -93,7 +91,7 @@
             </c:choose>
         </div>
 
-        <!-- Sezione Aggiudicazioni -->
+        <!--aggiudicazioni-->
         <div class="section-container">
             <div class="section-header">
                 <h2 class="section-title closed-title">Aggiudicazioni</h2>
