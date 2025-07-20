@@ -24,10 +24,10 @@
 
     <!-- ricerca-->
     <div class="search-section">
-        <form method="POST" class="search-form">
+        <form method="GET" class="search-form">
             <div class="search-container">
                 <input type="text"
-                       name="keyWord"
+                       name="search"
                        placeholder="Cerca nelle aste..."
                        class="search-input">
                 <button type="submit" class="search-button">

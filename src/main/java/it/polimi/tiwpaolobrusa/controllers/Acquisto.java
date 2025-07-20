@@ -73,6 +73,14 @@ public class Acquisto extends HttpServlet {
         AstaDAO aDao = new AstaDAO(con);
         String keyWord = request.getParameter("search");
         if (keyWord != null) {
+            if(keyWord.trim().isEmpty()){
+                request.setAttribute("errorMessage", "Parametro ricerca non può essere vuoto");
+                request.setAttribute("aggiud", aggiud);
+                String path = "/WEB-INF/acquisto.jsp";
+                dispatcher = request.getRequestDispatcher(path);
+                dispatcher.forward(request, response);
+                return;
+            }
             keyWord = keyWord.replace("\\", "\\\\")
                     .replace("%", "\\%")
                     .replace("_", "\\_");
@@ -96,13 +104,6 @@ public class Acquisto extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String keyWord = request.getParameter("keyWord");
-        if(keyWord == null){
-            request.getSession().setAttribute("errorMessage", "Parametro non puo essere null");
-            response.sendRedirect(request.getContextPath() + "/Acquisto");
-            return;
-        }
-        keyWord = URLEncoder.encode(keyWord, StandardCharsets.UTF_8);
-        response.sendRedirect(request.getContextPath() + "/Acquisto?search=" + keyWord);
+        response.sendRedirect(request.getContextPath() + "/Acquisto");
     }
 }

@@ -63,21 +63,24 @@ public class CreateAsta extends HttpServlet {
             return;
         }
         List<Integer> cods = new ArrayList<>();
+        int cod = 0;
         for (String s : c) {
-            try {
-                cods.add(Integer.parseInt(s));
-            } catch (Exception e) {
-                request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
+            try{
+                cod = Integer.parseInt(s);
+            }
+            catch(NumberFormatException e){
+                request.getSession().setAttribute("errorMessage", "Codici devono essere numeri");
                 response.sendRedirect(request.getContextPath() + "/Vendo");
                 return;
             }
+            cods.add(cod);
         }
         ArticoloDAO aDao = new ArticoloDAO(con);
         List<Articolo> articoli;
         try {
             articoli = aDao.getArticoli(cods);
         } catch (SQLException e) {
-            request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
+            request.getSession().setAttribute("errorMessage", e.getMessage());
             response.sendRedirect(request.getContextPath() + "/Vendo");
             return;
         }
@@ -86,7 +89,7 @@ public class CreateAsta extends HttpServlet {
         try {
             idAsta = aDao2.addAsta(articoli.stream().mapToInt(Articolo::getPrice).sum(), Integer.parseInt(request.getParameter("minBid")), LocalDateTime.parse(request.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
         } catch (SQLException e) {
-            request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
+            request.getSession().setAttribute("errorMessage", e.getMessage());
             response.sendRedirect(request.getContextPath() + "/Vendo");
             return;
         }
