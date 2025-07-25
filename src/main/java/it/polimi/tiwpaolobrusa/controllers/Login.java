@@ -59,8 +59,15 @@ public class Login extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UtenteDAO uDAO = new UtenteDAO(con);
         Utente user = null;
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        if (username == null || password == null || username.length() > 50 || password.length() > 50) {
+            request.getSession().setAttribute("errorMessage", "Lunghezza deve essere minore di 50 e non null");
+            response.sendRedirect(request.getContextPath() + "/Login");
+            return;
+        }
         try {
-            user = uDAO.getUtente(request.getParameter("username"), request.getParameter("password"));
+            user = uDAO.getUtente(username, password);
         } catch (SQLException e) {
             request.getSession().setAttribute("errorMessage", e.getCause().getMessage());
             response.sendRedirect(request.getContextPath() + "/Login");
