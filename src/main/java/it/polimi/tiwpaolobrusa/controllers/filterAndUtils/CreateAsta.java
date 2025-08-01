@@ -86,8 +86,23 @@ public class CreateAsta extends HttpServlet {
         }
         AstaDAO aDao2 = new AstaDAO(con);
         int idAsta = 0;
+        String mb = request.getParameter("minBid");
+        if (mb == null || mb.length() > 11) {
+            request.getSession().setAttribute("errorMessage", "Minbid non valido, prezzo piu piccolo richiesto");
+            response.sendRedirect(request.getContextPath() + "/Vendo");
+            return;
+        }
+        int minBid = 0;
         try {
-            idAsta = aDao2.addAsta(articoli.stream().mapToInt(Articolo::getPrice).sum(), Integer.parseInt(request.getParameter("minBid")), LocalDateTime.parse(request.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
+            minBid = Integer.parseInt(request.getParameter("minBid"));
+        }
+        catch(NumberFormatException e){
+            request.getSession().setAttribute("errorMessage", "Minbid devono essere numeri");
+            response.sendRedirect(request.getContextPath() + "/Vendo");
+            return;
+        }
+        try {
+            idAsta = aDao2.addAsta(articoli.stream().mapToInt(Articolo::getPrice).sum(), minBid, LocalDateTime.parse(request.getParameter("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
         } catch (SQLException e) {
             request.getSession().setAttribute("errorMessage", e.getMessage());
             response.sendRedirect(request.getContextPath() + "/Vendo");

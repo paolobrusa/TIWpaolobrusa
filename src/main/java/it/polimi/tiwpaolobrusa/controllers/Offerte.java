@@ -117,7 +117,7 @@ public class Offerte extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getParameter("idasta");
         String offerta = request.getParameter("offertaprezzo");
-        if (id == null || offerta == null) {
+        if (id == null || offerta == null || offerta.length() > 11) {
             request.getSession().setAttribute("errorMessage", "Un parametro è null, non è accettato");
             response.sendRedirect(request.getContextPath() + "/Offerta");
             return;
